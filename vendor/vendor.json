@@ -1,0 +1,75 @@
+{
+	"comment": "",
+	"heroku": {
+		"goVersion": "go1.9.1",
+		"install": [
+			"./..."
+		]
+	},
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "WgnmO18uJSWUTHYrkc/SctRw6ug=",
+			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "github.com/gin-gonic/gin",
+			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"checksumSHA1": "hYBUzMNfxNli3gvmwRo0QP6JWco=",
+			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "github.com/gin-gonic/gin/binding",
+			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"checksumSHA1": "18XGoZYnlE6mkYvHgHkl3G8edF4=",
+			"comment": "v1.0rc1-110-g4cc2de6",
+			"path": "github.com/gin-gonic/gin/render",
+			"revision": "4cc2de6207f4128624cbdd16be30f64966c67c08"
+		},
+		{
+			"checksumSHA1": "9IzwSj4IiEi9YCPDf6cwWOqR4C4=",
+			"path": "github.com/heroku/x/hmetrics",
+			"revision": "db51a09f7a0194d45555aa12fabfa060d017d41a",
+			"revisionTime": "2017-08-01T22:59:35Z"
+		},
+		{
+			"checksumSHA1": "in9eP5Y98A4ATgZUuxFvEafcGeM=",
+			"path": "github.com/heroku/x/hmetrics/onload",
+			"revision": "db51a09f7a0194d45555aa12fabfa060d017d41a",
+			"revisionTime": "2017-08-01T22:59:35Z"
+		},
+		{
+			"checksumSHA1": "w5fa3+Ha8YiU4zKY18JI0sVFHOU=",
+			"path": "github.com/manucorporat/sse",
+			"revision": "c142f0f1baea5cef7f98a8a6c222f6134368c1f5"
+		},
+		{
+			"checksumSHA1": "YNDNDo5mgd1MwEAP8LKZOPoxh4c=",
+			"path": "github.com/mattn/go-colorable",
+			"revision": "40e4aedc8fabf8c23e040057540867186712faa5"
+		},
+		{
+			"checksumSHA1": "I/0TsOMVWnRhtrivU4FMjA30eUM=",
+			"path": "github.com/mattn/go-isatty",
+			"revision": "7fcbc72f853b92b5720db4a6b8482be612daef24"
+		},
+		{
+			"checksumSHA1": "Bj0QzneJdkyitup6rUM5061KBuM=",
+			"path": "github.com/subosito/gotenv",
+			"revision": "009e1f9581dc712aba5682a279dee155ca3eeded",
+			"revisionTime": "2017-01-20T14:09:13Z"
+		},
+		{
+			"checksumSHA1": "hKZGpbFuCrkE4s1vxubKK1aFlfI=",
+			"path": "golang.org/x/net/context",
+			"revision": "d9558e5c97f85372afee28cf2b6059d7d3818919"
+		},
+		{
+			"checksumSHA1": "+XdzMsmmMW4wLewmrE0oEWzXA8g=",
+			"comment": "v5.9.1",
+			"path": "gopkg.in/bluesuncorp/validator.v5",
+			"revision": "d627af88ac021317a280d320986282a6dc97549a"
+		}
+	],
+	"rootPath": "github.com/leogregianin/brcep"
+}

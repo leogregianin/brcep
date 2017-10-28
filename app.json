@@ -1,0 +1,11 @@
+{
+  "name": "brcep",
+  "description": "Postal code from Brazil",
+  "keywords": [
+    "brcep"
+  ],
+  "image": "heroku/go:1.6",
+  "mount_dir": "https://github.com/leogregianin/brcep",
+  "website": "https://github.com/leogregianin/brcep",
+  "repository": "https://github.com/leogregianin/brcep"
+}
