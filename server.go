@@ -18,7 +18,7 @@ const helpMessage = `Welcome to brcep!
 Use like this: https://brcep.herokuapp.com/cep/json
 For example: https://brcep.herokuapp.com/78048000/json
 
-Return: 
+JSON result: 
 					
 {
 	"cep": "78048000",
