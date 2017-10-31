@@ -1,19 +1,37 @@
 package main
 
 import (
-	"encoding/json"
+	"os"
 	"fmt"
+	"regexp"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
-	"regexp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/subosito/gotenv"
 )
 
-const helpMessage = "Welcome to brcep! Use https://brcep.herokuapp.com/cep/json"
+const helpMessage = `Welcome to brcep!
+
+Use like this: https://brcep.herokuapp.com/cep/json
+For example: https://brcep.herokuapp.com/78048000/json
+
+Return: 
+					
+{
+	"cep": "78048000",
+	"endereco": "Avenida Miguel Sutil, de 5799/5800 a 7887/7888",
+	"bairro": "Consil",
+	"complemento": "",
+	"cidade": "Cuiabá",
+	"uf": "MT",
+	"ibge": "5103403",
+	"latitude": "-15.5786867",
+	"longitude": "-56.0952081"
+  }
+`
 
 // CepAbertoResult : Retorno da API CepAberto.com
 type CepAbertoResult struct {
@@ -133,10 +151,9 @@ func apiWriteJSON(resp *brcepResult) string {
 	if err != nil {
 		fmt.Printf("RegExp: %s", err)
 	}
-	cepClean := reg.ReplaceAllString(resp.Cep, "")
 
 	jsonConvert := &brcepResult{
-		Cep:         cepClean,
+		Cep:         reg.ReplaceAllString(resp.Cep, ""),
 		Endereco:    resp.Endereco,
 		Bairro:      resp.Bairro,
 		Complemento: resp.Complemento,
