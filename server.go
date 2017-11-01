@@ -1,13 +1,10 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"regexp"
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
-	"net/url"
+	"fmt"
+	"os"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/subosito/gotenv"
@@ -33,119 +30,8 @@ JSON result:
   }
 `
 
-// CepAbertoResult : Retorno da API CepAberto.com
-type CepAbertoResult struct {
-	Cep         string  `json:"cep"`
-	Logradouro  string  `json:"logradouro"`
-	Bairro      string  `json:"bairro"`
-	Complemento string  `json:"complemento"`
-	Cidade      string  `json:"cidade"`
-	Estado      string  `json:"estado"`
-	Latitude    string  `json:"latitude"`
-	Longitude   string  `json:"longitude"`
-	Altitude    float64 `json:"altitude"`
-	DDD         int     `json:"ddd"`
-	Unidade     string  `json:"unidade"`
-	Ibge        string  `json:"ibge"`
-}
-
-// ViaCepResult : Retorno da API ViaCep.com.br
-type ViaCepResult struct {
-	Cep         string  `json:"cep"`
-	Logradouro  string  `json:"logradouro"`
-	Bairro      string  `json:"bairro"`
-	Complemento string  `json:"complemento"`
-	Localidade  string  `json:"localidade"`
-	Uf          string  `json:"uf"`
-	Latitude    string  `json:"latitude"`
-	Longitude   string  `json:"longitude"`
-	Altitude    float64 `json:"altitude"`
-	DDD         int     `json:"ddd"`
-	Unidade     string  `json:"unidade"`
-	Ibge        string  `json:"ibge"`
-}
-
-// brcepResult : Padronização do JSON do brcep
-type brcepResult struct {
-	Cep         string `json:"cep"`
-	Endereco    string `json:"endereco"`
-	Bairro      string `json:"bairro"`
-	Complemento string `json:"complemento"`
-	Cidade      string `json:"cidade"`
-	Uf          string `json:"uf"`
-	Ibge        string `json:"ibge"`
-	Latitude    string `json:"latitude"`
-	Longitude   string `json:"longitude"`
-}
-
-func cepaberto(cep string) *CepAbertoResult {
-	cepAberto := url.QueryEscape(cep)
-
-	url := fmt.Sprintf("http://www.cepaberto.com/api/v2/ceps.json?cep=%s", cepAberto)
-
-	req, err := http.NewRequest("GET", url, nil)
-
-	req.Header.Set("Authorization", fmt.Sprintf(`Token token="%s"`, os.Getenv("cepabertoToken")))
-	if err != nil {
-		return nil
-	}
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return nil
-	}
-
-	content, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil
-	}
-
-	var resultado CepAbertoResult
-	err = json.Unmarshal(content, &resultado)
-	if err != nil {
-		return nil
-	}
-
-	return &resultado
-}
-
-func viacep(cep string) *ViaCepResult {
-
-	url := fmt.Sprintf("http://viacep.com.br/ws/%s/json/", cep)
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return nil
-	}
-
-	content, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil
-	}
-
-	var resultado ViaCepResult
-	err = json.Unmarshal(content, &resultado)
-	if err != nil {
-		return nil
-	}
-
-	return &resultado
-}
-
 // return json brcep template
-func apiWriteJSON(resp *brcepResult) string {
+func brcepAPI(resp *brcepResult) string {
 
 	reg, err := regexp.Compile("[^0-9]+")
 	if err != nil {
@@ -171,55 +57,18 @@ func apiWriteJSON(resp *brcepResult) string {
 	return string(conv)
 }
 
-// Mapping CepAbertoResult to brcepResult
-func apiCepabertoJSON(resp *CepAbertoResult) string {
-
-	var resultado brcepResult
-
-	resultado.Cep = resp.Cep
-	resultado.Endereco = resp.Logradouro
-	resultado.Bairro = resp.Bairro
-	resultado.Complemento = resp.Complemento
-	resultado.Cidade = resp.Cidade
-	resultado.Uf = resp.Estado
-	resultado.Ibge = resp.Ibge
-	resultado.Latitude = resp.Latitude
-	resultado.Longitude = resp.Longitude
-
-	return apiWriteJSON(&resultado)
-}
-
-// Mapping ViaCepResult to brcepResult
-func apiViacepJSON(resp *ViaCepResult) string {
-
-	var resultado brcepResult
-
-	resultado.Cep = resp.Cep
-	resultado.Endereco = resp.Logradouro
-	resultado.Bairro = resp.Bairro
-	resultado.Complemento = resp.Complemento
-	resultado.Cidade = resp.Localidade
-	resultado.Uf = resp.Uf
-	resultado.Ibge = resp.Ibge
-	resultado.Latitude = resp.Latitude
-	resultado.Longitude = resp.Longitude
-
-	return apiWriteJSON(&resultado)
-}
-
-// rewrite this please :D
 func apiCep(c *gin.Context) {
 
 	cep := c.Param("cep")
 	c.Header("Content-Type", "application/json; charset=utf-8")
 
-	resp := cepaberto(cep) // get CEPAberto
+	resp := getCepaberto(cep) // get CEPAberto
 	if (resp != nil) && (resp.Cep != "") {
-		c.String(200, apiCepabertoJSON(resp))
+		c.String(200, mapCepabertoJSON(resp))
 	} else {
-		resp := viacep(cep) // get ViaCEP
+		resp := getViacep(cep) // get ViaCEP
 		if (resp != nil) && (resp.Cep != "") {
-			c.String(200, apiViacepJSON(resp))
+			c.String(200, mapViacepJSON(resp))
 		} else {
 			c.JSON(500, gin.H{"status": "500"})
 		}

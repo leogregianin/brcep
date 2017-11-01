@@ -174,7 +174,7 @@ go get -u github.com/subosito/gotenv
 ### Executar o server
 
 ```sh
-$ go run server.go
+$ go run .\server.go .\cepaberto.go .\viacep.go .\util.go
 ```
 
 ![brcep](img/server.png)
