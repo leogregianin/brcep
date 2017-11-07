@@ -72,7 +72,53 @@ print(json.loads(data.decode(encoding)))
 
 ### Golang
 ```go
+package main
 
+import (
+    "encoding/json"
+    "fmt"
+    "log"
+    "net/http"
+    "net/url"
+)
+
+type brCep struct {
+	Cep         string `json:"cep"`
+	Endereco    string `json:"endereco"`
+	Bairro      string `json:"bairro"`
+	Complemento string `json:"complemento"`
+	Cidade      string `json:"cidade"`
+	Uf          string `json:"uf"`
+	Ibge        string `json:"ibge"`
+	Latitude    string `json:"latitude"`
+	Longitude   string `json:"longitude"`
+}
+
+func main() {
+    cep := "78048000"
+    cepSeguro := url.QueryEscape(cep)
+
+    url := fmt.Sprintf("https://brcep.herokuapp.com/%s/json", cepSeguro)
+
+    req, err := http.NewRequest("GET", url, nil)
+
+    client := &http.Client{}
+
+    resp, err := client.Do(req)
+    if err != nil {
+        log.Fatal("Do: ", err)
+        return
+    }
+
+    defer resp.Body.Close()
+    var resultado brCep
+
+    if err := json.NewDecoder(resp.Body).Decode(&resultado); err != nil {
+        log.Println(err)
+    }
+
+    fmt.Printf("%+v\n", resultado)
+}
 ```
 
 ### Ruby
@@ -151,7 +197,9 @@ end;
 - [ ] Implementar retorno da API com XML
 - [ ] Implementar retorno da API com GraphQL
 - [X] Implementar exemplos de uso da API em curl, Javascript, Python, Ruby, PHP e Delphi
-- [ ] Implementar exemplos de uso da API em C#, Java e Go
+- [X] Implementar exemplos de uso da API em Go
+- [ ] Implementar exemplos de uso da API em Java
+- [ ] Implementar exemplos de uso da API em C#
 - [X] Arquivo .env define as configurações do ambiente
 - [ ] Gravar as informações do CEP consultado em um banco de dados
 - [ ] A cada requisição fazer a consulta em thread parallelism (goroutines) em todas as APIs e atualizar o banco de dados
