@@ -219,6 +219,11 @@ go get -u github.com/gin-gonic/gin
 go get -u github.com/subosito/gotenv
 ```
 
+### Configuração do ambiente
+
+* A API do CEPAberto necessita do token de autorização e a API do ViaCEP não necessita de token.
+* Renomear o arquivo .env.example para .env e incluir o seu token de acesso da API CEPAberto.com
+
 ### Executar o server
 
 ```sh
