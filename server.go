@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 	"regexp"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/subosito/gotenv"
@@ -105,5 +107,13 @@ func main() {
 	router.GET("/:cep/json", apiCep)
 
 	fmt.Println("starting server on", os.Getenv("PORT"))
-	router.Run(":" + os.Getenv("PORT"))
+
+	server := &http.Server{
+		Addr:           ":" + os.Getenv("PORT"),
+		Handler:        router,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	server.ListenAndServe()
 }
