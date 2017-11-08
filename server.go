@@ -12,12 +12,14 @@ import (
 	"github.com/subosito/gotenv"
 )
 
-const helpMessage = `Welcome to brcep!
+const helpMessage = `Bem-vindo ao brcep!
 
-Use like this: https://brcep.herokuapp.com/cep/json
-For example: https://brcep.herokuapp.com/78048000/json
+Utilize desta forma: https://brcep.herokuapp.com/cep/json
+                 ou: https://brcep.herokuapp.com/cep/xml
 
-JSON result: 
+Por exemplo: https://brcep.herokuapp.com/78048000/json
+
+Resultado: 
 					
 {
 	"cep": "78048000",
@@ -59,7 +61,7 @@ func brcepAPI(resp *brcepResult) string {
 	return string(conv)
 }
 
-func apiCep(c *gin.Context) {
+func apiCepJSON(c *gin.Context) {
 
 	cep := c.Param("cep")
 	c.Header("Content-Type", "application/json; charset=utf-8")
@@ -73,6 +75,62 @@ func apiCep(c *gin.Context) {
 			c.String(200, mapViacepJSON(resp))
 		} else {
 			c.JSON(500, gin.H{"status": "500"})
+		}
+	}
+}
+
+func apiCepXML(c *gin.Context) {
+
+	cep := c.Param("cep")
+	c.Header("Content-Type", "application/xml; charset=utf-8")
+
+	resp := getCepaberto(cep)
+	if (resp != nil) && (resp.Cep != "") {
+
+		data := mapCepabertoJSON(resp)
+		var cepParser = brcep{}
+		err := json.Unmarshal([]byte(data), &cepParser)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+
+		c.XML(200, gin.H{
+			"Cep":         cepParser.Cep,
+			"Endereco":    cepParser.Endereco,
+			"Bairro":      cepParser.Bairro,
+			"Complemento": cepParser.Complemento,
+			"Cidade":      cepParser.Cidade,
+			"Uf":          cepParser.Uf,
+			"Ibge":        cepParser.Ibge,
+			"Latitude":    cepParser.Latitude,
+			"Longitude":   cepParser.Longitude,
+		})
+
+	} else {
+		resp := getViacep(cep) // get ViaCEP
+
+		if (resp != nil) && (resp.Cep != "") {
+			data := mapViacepJSON(resp)
+			var cepParser = brcep{}
+			err := json.Unmarshal([]byte(data), &cepParser)
+			if err != nil {
+				fmt.Println("error:", err)
+			}
+
+			c.XML(200, gin.H{
+				"Cep":         cepParser.Cep,
+				"Endereco":    cepParser.Endereco,
+				"Bairro":      cepParser.Bairro,
+				"Complemento": cepParser.Complemento,
+				"Cidade":      cepParser.Cidade,
+				"Uf":          cepParser.Uf,
+				"Ibge":        cepParser.Ibge,
+				"Latitude":    cepParser.Latitude,
+				"Longitude":   cepParser.Longitude,
+			})
+
+		} else {
+			c.XML(500, gin.H{"status": "500"})
 		}
 	}
 }
@@ -104,7 +162,9 @@ func main() {
 	router.Use(gin.ErrorLogger())
 
 	router.NoRoute(startPage)
-	router.GET("/:cep/json", apiCep)
+	router.GET("/:cep/json", apiCepJSON)
+	router.GET("/:cep/xml", apiCepXML)
+	//router.GET("/:cep/graphql", apiCepGraphQL)
 
 	port := os.Getenv("PORT")
 	fmt.Println("starting server on", port)
