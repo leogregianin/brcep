@@ -201,9 +201,9 @@ end;
 - [X] Implementar exemplo de uso da API em Ruby
 - [X] Implementar exemplo de uso da API em PHP
 - [X] Implementar exemplo de uso da API em Delphi
-- [X] Implementar exemplos de uso da API em Go
-- [ ] Implementar exemplos de uso da API em Java
-- [ ] Implementar exemplos de uso da API em C#
+- [X] Implementar exemplo de uso da API em Go
+- [ ] Implementar exemplo de uso da API em Java
+- [ ] Implementar exemplo de uso da API em C#
 - [X] Arquivo .env define as configurações do ambiente
 - [ ] Gravar as informações do CEP consultado em um banco de dados
 - [ ] A cada requisição fazer a consulta em thread parallelism (goroutines) em todas as APIs e atualizar o banco de dados
