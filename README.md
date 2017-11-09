@@ -195,8 +195,12 @@ end;
 - [X] Após a consulta às APIs retornar um JSON padrão do brcep
 - [ ] Implementar interfaces
 - [X] Implementar retorno da API com XML
-- [ ] Implementar retorno da API com GraphQL
-- [X] Implementar exemplos de uso da API em curl, Javascript, Python, Ruby, PHP e Delphi
+- [X] Implementar exemplo de uso da API em curl
+- [X] Implementar exemplo de uso da API em Javascript
+- [X] Implementar exemplo de uso da API em Python
+- [X] Implementar exemplo de uso da API em Ruby
+- [X] Implementar exemplo de uso da API em PHP
+- [X] Implementar exemplo de uso da API em Delphi
 - [X] Implementar exemplos de uso da API em Go
 - [ ] Implementar exemplos de uso da API em Java
 - [ ] Implementar exemplos de uso da API em C#

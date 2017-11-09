@@ -164,7 +164,6 @@ func main() {
 	router.NoRoute(startPage)
 	router.GET("/:cep/json", apiCepJSON)
 	router.GET("/:cep/xml", apiCepXML)
-	//router.GET("/:cep/graphql", apiCepGraphQL)
 
 	port := os.Getenv("PORT")
 	fmt.Println("starting server on", port)
