@@ -15,7 +15,7 @@ Tópicos
   * [Acesso a API](#acesso-a-api)
   	* [Retorno](#retorno)
   * [Exemplos](#exemplos)
-        * [Curl](#curl)
+	* [Curl](#curl)
 	* [Javascript](#javascript)
 	* [Python](#python)
 	* [Golang](#golang)
@@ -24,7 +24,7 @@ Tópicos
 	* [Java](#java)
 	* [C#](#c-sharp)
 	* [Delphi](#delphi)
-  * [ToDo](#todo)
+  * [A fazer](#a-fazer)
   * [Rodar localmente](#rodar-localmente)
 	* [Instalação do Golang](#instalação-do-golang)
 	* [Instalação dos pacotes](#instalação-dos-pacotes)
@@ -64,6 +64,7 @@ A API retorna o formato JSON.
 
 ## Exemplos
 
+Exemplos
 
 ### curl
 ```curl
@@ -214,7 +215,7 @@ begin
 end;
 ```
 
-## ToDo
+## A fazer
 
 - [x] Implementar requisição ao [ViaCEP](http://viacep.com.br) 
 - [x] Implementar requisição ao [CEPAberto](http://cepaberto.com)
