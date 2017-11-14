@@ -194,7 +194,7 @@ end;
 - [x] Quando a API do CEPAberto não retornar nada, buscar no ViaCEP
 - [x] Após a consulta às APIs retornar um JSON padrão do brcep
 - [ ] Implementar interfaces
-- [x] ~~Implementar retorno da API com XML ~~
+- [x] ~~Implementar retorno da API com XML~~
 - [x] Implementar exemplo de uso da API em curl
 - [x] Implementar exemplo de uso da API em Javascript
 - [x] Implementar exemplo de uso da API em Python
