@@ -64,8 +64,6 @@ A API retorna o formato JSON.
 
 ## Exemplos
 
-Exemplos
-
 ### curl
 ```curl
 curl https://brcep.herokuapp.com/78048000/json
