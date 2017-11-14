@@ -191,20 +191,20 @@ end;
 - [x] Implementar requisição ao [ViaCEP](http://viacep.com.br) 
 - [x] Implementar requisição ao [CEPAberto](http://cepaberto.com)
 - [ ] Implementar acesso a outras fontes de CEP (Correios)
-- [X] Quando a API do CEPAberto não retornar nada, buscar no ViaCEP
-- [X] Após a consulta às APIs retornar um JSON padrão do brcep
+- [x] Quando a API do CEPAberto não retornar nada, buscar no ViaCEP
+- [x] Após a consulta às APIs retornar um JSON padrão do brcep
 - [ ] Implementar interfaces
-- __[X] Implementar retorno da API com XML__
-- [X] Implementar exemplo de uso da API em curl
-- [X] Implementar exemplo de uso da API em Javascript
-- [X] Implementar exemplo de uso da API em Python
-- [X] Implementar exemplo de uso da API em Ruby
-- [X] Implementar exemplo de uso da API em PHP
-- [X] Implementar exemplo de uso da API em Delphi
-- [X] Implementar exemplo de uso da API em Go
+- [x] ~~Implementar retorno da API com XML ~~
+- [x] Implementar exemplo de uso da API em curl
+- [x] Implementar exemplo de uso da API em Javascript
+- [x] Implementar exemplo de uso da API em Python
+- [x] Implementar exemplo de uso da API em Ruby
+- [x] Implementar exemplo de uso da API em PHP
+- [x] Implementar exemplo de uso da API em Delphi
+- [x] Implementar exemplo de uso da API em Go
 - [ ] Implementar exemplo de uso da API em Java
 - [ ] Implementar exemplo de uso da API em C#
-- [X] Arquivo .env define as configurações do ambiente
+- [x] Arquivo .env define as configurações do ambiente
 - [ ] Gravar as informações do CEP consultado em um banco de dados
 - [ ] A cada requisição fazer a consulta em thread parallelism (goroutines) em todas as APIs e atualizar o banco de dados
 - [ ] Implementar testes unitários
