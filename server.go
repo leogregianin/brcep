@@ -15,12 +15,10 @@ import (
 const helpMessage = `Bem-vindo ao brcep!
 
 Utilize desta forma: https://brcep.herokuapp.com/cep/json
-                 ou: https://brcep.herokuapp.com/cep/xml
-
 Por exemplo: https://brcep.herokuapp.com/78048000/json
 
 Resultado: 
-					
+
 {
 	"cep": "78048000",
 	"endereco": "Avenida Miguel Sutil, de 5799/5800 a 7887/7888",
@@ -79,62 +77,6 @@ func apiCepJSON(c *gin.Context) {
 	}
 }
 
-func apiCepXML(c *gin.Context) {
-
-	cep := c.Param("cep")
-	c.Header("Content-Type", "application/xml; charset=utf-8")
-
-	resp := getCepaberto(cep)
-	if (resp != nil) && (resp.Cep != "") {
-
-		data := mapCepabertoJSON(resp)
-		var cepParser = brcep{}
-		err := json.Unmarshal([]byte(data), &cepParser)
-		if err != nil {
-			fmt.Println("error:", err)
-		}
-
-		c.XML(200, gin.H{
-			"Cep":         cepParser.Cep,
-			"Endereco":    cepParser.Endereco,
-			"Bairro":      cepParser.Bairro,
-			"Complemento": cepParser.Complemento,
-			"Cidade":      cepParser.Cidade,
-			"Uf":          cepParser.Uf,
-			"Ibge":        cepParser.Ibge,
-			"Latitude":    cepParser.Latitude,
-			"Longitude":   cepParser.Longitude,
-		})
-
-	} else {
-		resp := getViacep(cep) // get ViaCEP
-
-		if (resp != nil) && (resp.Cep != "") {
-			data := mapViacepJSON(resp)
-			var cepParser = brcep{}
-			err := json.Unmarshal([]byte(data), &cepParser)
-			if err != nil {
-				fmt.Println("error:", err)
-			}
-
-			c.XML(200, gin.H{
-				"Cep":         cepParser.Cep,
-				"Endereco":    cepParser.Endereco,
-				"Bairro":      cepParser.Bairro,
-				"Complemento": cepParser.Complemento,
-				"Cidade":      cepParser.Cidade,
-				"Uf":          cepParser.Uf,
-				"Ibge":        cepParser.Ibge,
-				"Latitude":    cepParser.Latitude,
-				"Longitude":   cepParser.Longitude,
-			})
-
-		} else {
-			c.XML(500, gin.H{"status": "500"})
-		}
-	}
-}
-
 // 404 error showing start page
 func startPage(c *gin.Context) {
 	c.String(404, helpMessage)
@@ -163,7 +105,6 @@ func main() {
 
 	router.NoRoute(startPage)
 	router.GET("/:cep/json", apiCepJSON)
-	router.GET("/:cep/xml", apiCepXML)
 
 	port := os.Getenv("PORT")
 	fmt.Println("starting server on", port)

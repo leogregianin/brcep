@@ -13,7 +13,7 @@ API para acesso a informações dos CEPs do Brasil. A ideia central é não fica
 
 Para visualizar os dados acesse [https://brcep.herokuapp.com/78048000/json](https://brcep.herokuapp.com/78048000/json).
 
-A API retorna o formato JSON e XML.
+A API retorna o formato JSON.
 
 ### Retorno da API
 
@@ -194,7 +194,7 @@ end;
 - [X] Quando a API do CEPAberto não retornar nada, buscar no ViaCEP
 - [X] Após a consulta às APIs retornar um JSON padrão do brcep
 - [ ] Implementar interfaces
-- [X] Implementar retorno da API com XML
+- __[X] Implementar retorno da API com XML__
 - [X] Implementar exemplo de uso da API em curl
 - [X] Implementar exemplo de uso da API em Javascript
 - [X] Implementar exemplo de uso da API em Python

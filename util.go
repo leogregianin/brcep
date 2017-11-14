@@ -56,15 +56,3 @@ type brcepResult struct {
 type Ibrcep interface {
 	brcepJSON() brcepResult
 }
-
-type brcep struct {
-	Cep         string
-	Endereco    string
-	Bairro      string
-	Complemento string
-	Cidade      string
-	Uf          string
-	Ibge        string
-	Latitude    string
-	Longitude   string
-}
