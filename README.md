@@ -233,7 +233,7 @@ end;
 - [ ] Implementar exemplo de uso da API em C#
 - [x] Arquivo .env define as configurações do ambiente
 - [ ] Gravar as informações do CEP consultado em um banco de dados
-- [ ] A cada requisição fazer a consulta em thread parallelism (goroutines) em todas as APIs e atualizar o banco de dados
+- [ ] A cada requisição fazer a consulta com goroutines em todas as APIs e atualizar o banco de dados
 - [ ] Implementar testes unitários
 
 
