@@ -194,6 +194,7 @@ uses idHTTP;
 procedure TForm1.ButtonCEPClick(Sender: TObject);
 var
     HTTP: TIdHTTP;
+    IDSSLHandler : TIdSSLIOHandlerSocketOpenSSL;    
     Response: TStringStream;
     URL: String;
 begin
@@ -201,6 +202,8 @@ begin
     MemoReturn.Lines.Clear;
     try
         HTTP := TIdHTTP.Create;
+        IDSSLHandler := TIdSSLIOHandlerSocketOpenSSL.Create;	
+        HTTP.IOHandler := IDSSLHandler;	
         Response := TStringStream.Create('');
         HTTP.Get(URL, Response);
         if HTTP.ResponseCode = 200 then
