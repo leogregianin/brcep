@@ -1,7 +1,10 @@
   language: go
   go:
-    - 1.6
+    - 1.9
+  before_install:
+    - go get -u github.com/gin-gonic/gin
+    - go get -u github.com/subosito/gotenv
   script: 
-    go get github.com/gin-gonic/gin && go get github.com/subosito/gotenv && go test server_test.go
+    go test server_test.go
   notifications:
     email: true
