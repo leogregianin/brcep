@@ -33,7 +33,8 @@ Tópicos
 	* [Instalação do Golang](#instalação-do-golang)
 	* [Instalação dos pacotes](#instalação-dos-pacotes)
 	* [Configuração do ambiente](#configuração-do-ambiente)
-	* [Executar o server](#executar-o-server)
+	* [Executar os testes](#executar-os-testes)
+    * [Executar o server](#executar-o-server)
 	* [Acessar a API](#acessar-a-api)
   * [Licença de uso](#licença-de-uso)
 
@@ -236,7 +237,7 @@ go get -u github.com/subosito/gotenv
 * A API do CEPAberto necessita do token de autorização e a API do ViaCEP não necessita de token.
 * Renomear o arquivo .env.example para .env e incluir o seu token de acesso da API CEPAberto.com
 
-### Executar os testes unitários
+### Executar os testes
 
 ```sh
 $ go test -bench .
