@@ -16,6 +16,7 @@ type CepAbertoResult struct {
 	Ibge        string `json:"ibge"`
 }
 
+// Icepaberto : Interface da struct CepAbertoResult
 type Icepaberto interface {
 	cepabertoJSON() CepAbertoResult
 }
@@ -36,6 +37,7 @@ type ViaCepResult struct {
 	Ibge        string `json:"ibge"`
 }
 
+// Iviacep : Interface da struct ViaCepResult
 type Iviacep interface {
 	viacepJSON() ViaCepResult
 }
@@ -53,6 +55,7 @@ type brcepResult struct {
 	Longitude   string `json:"longitude"`
 }
 
+// Ibrcep : Interface da struct brcepResult
 type Ibrcep interface {
 	brcepJSON() brcepResult
 }
