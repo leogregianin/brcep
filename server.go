@@ -94,10 +94,12 @@ func main() {
 
 	gotenv.Load(".env")
 
-	if os.Getenv("GIN_MODE") == "release" {
-		gin.SetMode(gin.ReleaseMode)
-	} else {
+	if os.Getenv("GIN_MODE") == "test" {
+		gin.SetMode(gin.TestMode)
+	} else if os.Getenv("GIN_MODE") == "debug" {
 		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
 	}
 
 	router := gin.Default()
