@@ -5,6 +5,6 @@
     - go get -u github.com/gin-gonic/gin
     - go get -u github.com/subosito/gotenv
   script: 
-    go test server_test.go
+    go test -bench .
   notifications:
     email: true
