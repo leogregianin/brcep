@@ -39,8 +39,8 @@ Tópicos
     * [Executar o server](#executar-o-server)
 	* [Acessar a API](#acessar-a-api)
   * [Deploy](#deploy)
-    * [Deploy no Heroku](deploy-no-heroku) 
-    * [Deploy no Docker via Zeit Now](deploy-no-docker-via-zeit-now) 
+    * [Deploy no Heroku](#deploy-no-heroku) 
+    * [Deploy no Docker via Zeit Now](#deploy-no-docker-via-zeit-now) 
   * [Licença de uso](#licença-de-uso)
 
 
