@@ -18,7 +18,9 @@ Tópicos
 =================
 
   * [Acesso a API](#acesso-a-api)
-  	* [Retorno](#retorno)
+  	* [Heroku](#heroku)
+  	* [Zeit Now](#zeit-now)
+  	* [Response](#response)
   * [Exemplos](#exemplos)
 	* [Curl](#curl)
 	* [Javascript](#javascript)
@@ -36,16 +38,21 @@ Tópicos
 	* [Executar os testes](#executar-os-testes)
     * [Executar o server](#executar-o-server)
 	* [Acessar a API](#acessar-a-api)
+  * [Deploy](#deploy)
+    * [Deploy no Heroku](deploy-no-heroku) 
+    * [Deploy no Docker via Zeit Now](deploy-no-docker-via-zeit-now) 
   * [Licença de uso](#licença-de-uso)
 
 
 ## Acesso a API
 
+### Heroku
 Para visualizar os dados acesse [https://brcep.herokuapp.com/78048000/json](https://brcep.herokuapp.com/78048000/json).
 
-A API retorna em formato JSON como no exemplo abaixo.
+### Zeit Now
+Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](https://brcep-qnlohrjtbl.now.sh/78048000/json).
 
-### Retorno
+### Response
 
 ```json
 {
@@ -253,9 +260,34 @@ $ go run .\server.go .\cepaberto.go .\viacep.go .\util.go
 
 ![brcep](img/server.png)
 
+
 ### Acessar a API
 
 Para visualizar os dados acesse [http://localhost:3000/78048000/json](http://localhost:3000/78048000/json).
+
+
+## Deploy
+
+### Deploy no Heroku
+
+What's [Heroku](https://www.heroku.com)?
+
+```sh
+$ heroku login
+$ git add .
+$ git commit -am "deploy"
+$ git push heroku master
+```
+
+### Deploy no Docker via Zeit Now
+
+What's [Now](https://zeit.co/now)?
+
+```sh
+$ now login
+$ now
+```
+
 
 ## Licença de uso
 

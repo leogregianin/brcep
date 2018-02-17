@@ -108,7 +108,8 @@ func main() {
 	router.NoRoute(startPage)
 	router.GET("/:cep/json", apiCepJSON)
 
-	port := os.Getenv("PORT")
+	port := "8000"
+
 	fmt.Println("starting server on", port)
 
 	server := &http.Server{

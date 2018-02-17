@@ -1,10 +1,5 @@
-FROM alpine:latest
-
-MAINTAINER Leonardo Gregianin <leogregianin@gmail.com>
-
-WORKDIR "/opt"
-
-ADD .docker_build/brcep /opt/bin/brcep
-
-CMD ["/opt/bin/brcep"]
-
+FROM golang:alpine
+ADD . /go/src/zeit/brcep
+RUN go install zeit/brcep
+CMD ["/go/bin/brcep"]
+EXPOSE 8000
