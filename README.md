@@ -195,7 +195,39 @@ end
 
 ### C-Sharp
 ```c#
+using System;
+using System.Windows.Forms;
+using System.Net;
+using System.IO;
 
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        public string UserAgent = @"Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/534.23 (KHTML, like Gecko) Chrome/11.0.686.3 Safari/534.23";
+
+        public string HttpGet(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.UserAgent = UserAgent;
+            request.KeepAlive = false;
+            request.Method = "GET";
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            StreamReader sr = new StreamReader(response.GetResponseStream());
+            return sr.ReadToEnd();
+        }
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            richTextBox2.Text = HttpGet(textBox2.Text);
+        }
+    }
+}
 ```
 
 ### Delphi
