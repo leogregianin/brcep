@@ -26,9 +26,11 @@ Resultado:
 	"complemento": "",
 	"cidade": "Cuiabá",
 	"uf": "MT",
-	"ibge": "5103403",
 	"latitude": "-15.5786867",
 	"longitude": "-56.0952081"
+	"ddd": "",
+	"unidade": "",
+	"ibge": "5103403",
   }
 `
 
@@ -109,6 +111,7 @@ func main() {
 	router.GET("/:cep/json", apiCepJSON)
 
 	port := "8000"
+	//port := os.Getenv("PORT")
 
 	fmt.Println("starting server on", port)
 

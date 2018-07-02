@@ -13,22 +13,26 @@ func getViacep(cep string) *ViaCepResult {
 
 	resp, err := http.Get(url)
 	if err != nil {
+		fmt.Println("Get error")
 		return nil
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
+		fmt.Println("200 error")
 		return nil
 	}
 
 	content, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		fmt.Println("Real error")
 		return nil
 	}
 
 	var resultado ViaCepResult
 	err = json.Unmarshal(content, &resultado)
 	if err != nil {
+		fmt.Println("json error")
 		return nil
 	}
 
@@ -36,7 +40,6 @@ func getViacep(cep string) *ViaCepResult {
 }
 
 func mapViacepJSON(resp *ViaCepResult) string {
-	//func (viacep ViaCepResult) viacepJSON() string {
 
 	var resultado brcepResult
 
@@ -44,23 +47,13 @@ func mapViacepJSON(resp *ViaCepResult) string {
 	resultado.Endereco = resp.Logradouro
 	resultado.Bairro = resp.Bairro
 	resultado.Complemento = resp.Complemento
-	resultado.Cidade = resp.Localidade
-	resultado.Uf = resp.Uf
-	resultado.Ibge = resp.Ibge
+	resultado.Cidade = resp.Cidade
+	resultado.Uf = resp.Estado
 	resultado.Latitude = resp.Latitude
 	resultado.Longitude = resp.Longitude
-
-	/*
-		resultado.Cep = viacep.Cep
-		resultado.Endereco = viacep.Logradouro
-		resultado.Bairro = viacep.Bairro
-		resultado.Complemento = viacep.Complemento
-		resultado.Cidade = viacep.Localidade
-		resultado.Uf = viacep.Uf
-		resultado.Ibge = viacep.Ibge
-		resultado.Latitude = viacep.Latitude
-		resultado.Longitude = viacep.Longitude
-	*/
+	resultado.DDD = resp.Ibge
+	resultado.Unidade = resp.Unidade
+	resultado.Ibge = resp.Ibge
 
 	return brcepAPI(&resultado)
 }

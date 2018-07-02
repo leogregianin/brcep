@@ -5,15 +5,22 @@ type CepAbertoResult struct {
 	Cep         string `json:"cep"`
 	Logradouro  string `json:"logradouro"`
 	Bairro      string `json:"bairro"`
-	Complemento string `json:"complemento"`
-	Cidade      string `json:"cidade"`
-	Estado      string `json:"estado"`
-	Latitude    string `json:"latitude"`
-	Longitude   string `json:"longitude"`
-	Altitude    string `json:"altitude"`
-	DDD         string `json:"ddd"`
-	Unidade     string `json:"unidade"`
-	Ibge        string `json:"ibge"`
+	Complemento string ``
+	Cidade      struct {
+		Nome string `json:"nome"`
+	}
+	Estado struct {
+		Sigla string `json:"sigla"`
+	}
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
+	UfDdd     struct {
+		DDD string `json:"ddd"`
+	}
+	Unidade    string ``
+	CodigoIbge struct {
+		Ibge string `json:"ibge"`
+	}
 }
 
 // Icepaberto : Interface da struct CepAbertoResult
@@ -27,11 +34,10 @@ type ViaCepResult struct {
 	Logradouro  string `json:"logradouro"`
 	Bairro      string `json:"bairro"`
 	Complemento string `json:"complemento"`
-	Localidade  string `json:"localidade"`
-	Uf          string `json:"uf"`
+	Cidade      string `json:"localidade"`
+	Estado      string `json:"uf"`
 	Latitude    string `json:"latitude"`
 	Longitude   string `json:"longitude"`
-	Altitude    string `json:"altitude"`
 	DDD         string `json:"ddd"`
 	Unidade     string `json:"unidade"`
 	Ibge        string `json:"ibge"`
@@ -50,9 +56,11 @@ type brcepResult struct {
 	Complemento string `json:"complemento"`
 	Cidade      string `json:"cidade"`
 	Uf          string `json:"uf"`
-	Ibge        string `json:"ibge"`
 	Latitude    string `json:"latitude"`
 	Longitude   string `json:"longitude"`
+	DDD         string `json:"ddd"`
+	Unidade     string `json:"unidade"`
+	Ibge        string `json:"ibge"`
 }
 
 // Ibrcep : Interface da struct brcepResult

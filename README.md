@@ -62,9 +62,11 @@ Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](
   "complemento": "",
   "cidade": "Cuiabá",
   "uf": "MT",
-  "ibge": "5103403",
   "latitude": "-15.5786867",
-  "longitude": "-56.0952081"
+  "longitude": "-56.0952081",
+  "ddd": "",
+  "unidade": "",
+  "ibge": "5103403"
 }
 ```
 
@@ -126,9 +128,11 @@ type brCep struct {
 	Complemento string `json:"complemento"`
 	Cidade      string `json:"cidade"`
 	Uf          string `json:"uf"`
-	Ibge        string `json:"ibge"`
 	Latitude    string `json:"latitude"`
 	Longitude   string `json:"longitude"`
+	Ddd         string `json:"ddd"`
+	Unidade     string `json:"unidade"`
+	Ibge        string `json:"ibge"`
 }
 
 func main() {
@@ -289,6 +293,13 @@ $ go test -bench .
 ```sh
 $ go run .\server.go .\cepaberto.go .\viacep.go .\util.go
 ```
+
+ou 
+
+```sh
+$ go build && ./brcep.exe
+```
+
 
 ![brcep](img/server.png)
 

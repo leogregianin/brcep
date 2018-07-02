@@ -34,30 +34,33 @@ var testCasesContent = []struct {
 }{
 	{
 		"01311200",
-		`{
+		`{ 
   "cep": "01311200",
-  "endereco": "Avenida Paulista",
+  "endereco": "Avenida Paulista, de 1047 a 1865 - lado ímpar",
   "bairro": "Bela Vista",
-  "complemento": "de 1047 a 1865 - lado ímpar",
+  "complemento": "",
   "cidade": "São Paulo",
   "uf": "SP",
-  "ibge": "3550308",
-  "latitude": "",
-  "longitude": ""
+  "latitude": "-23.5360299954",
+  "longitude": "-46.622942654",
+  "ddd": "",
+  "unidade": "",
+  "ibge": ""
 }`,
 	},
-	{
-		"22070011",
-		`{
+	{"22070011",
+		`{ 
   "cep": "22070011",
-  "endereco": "Avenida Nossa Senhora de Copacabana",
+  "endereco": "Avenida Nossa Senhora de Copacabana, de 1109 ao fim - lado ímpar",
   "bairro": "Copacabana",
-  "complemento": "de 1109 ao fim - lado ímpar",
+  "complemento": "",
   "cidade": "Rio de Janeiro",
   "uf": "RJ",
-  "ibge": "3304557",
-  "latitude": "",
-  "longitude": ""
+  "latitude": "-22.9697777",
+  "longitude": "-43.1868592",
+  "ddd": "",
+  "unidade": "",
+  "ibge": ""
 }`,
 	},
 }
