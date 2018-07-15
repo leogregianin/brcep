@@ -47,7 +47,7 @@ Tópicos
 ## Acesso a API
 
 ### Heroku
-Para visualizar os dados acesse [https://brcep.herokuapp.com/78048000/json](https://brcep.herokuapp.com/78048000/json).
+Para visualizar os dados acesse [https://brcep-dlfeappmhe.now.sh/78048000/json](https://brcep-dlfeappmhe.now.sh/78048000/json).
 
 ### Zeit Now
 Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](https://brcep-qnlohrjtbl.now.sh/78048000/json).
@@ -78,14 +78,14 @@ Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](
 
 ### curl
 ```curl
-curl https://brcep.herokuapp.com/78048000/json
+curl https://brcep-dlfeappmhe.now.sh/78048000/json
 ```
 
 ### Javascript
 ```javascript
 var request = require('request');
 var options = {
-    url: 'https://brcep.herokuapp.com/78048000/json',
+    url: 'https://brcep-dlfeappmhe.now.sh/78048000/json',
     }
 };
 function callback(error, response, body) {
@@ -102,7 +102,7 @@ request(options, callback);
 import urllib.request
 import json
 
-url = "https://brcep.herokuapp.com/78048000/json"
+url = "https://brcep-dlfeappmhe.now.sh/78048000/json"
 result = urllib.request.urlopen(url)
 data = result.read()
 encoding = result.info().get_content_charset('utf-8')
@@ -139,7 +139,7 @@ func main() {
     cep := "78048000"
     cepSeguro := url.QueryEscape(cep)
 
-    url := fmt.Sprintf("https://brcep.herokuapp.com/%s/json", cepSeguro)
+    url := fmt.Sprintf("https://brcep-dlfeappmhe.now.sh/%s/json", cepSeguro)
 
     req, err := http.NewRequest("GET", url, nil)
 
@@ -168,7 +168,7 @@ require "net/http"
 require "uri"
 require 'json'
 
-url = "https://brcep.herokuapp.com/78048000/json"
+url = "https://brcep-dlfeappmhe.now.sh/78048000/json"
 uri = URI.parse(url)
 
 http = Net::HTTP.new(uri.host, uri.port)
@@ -186,7 +186,7 @@ end
 ```php
 <?php
     header ( "Content-Type: application/json;charset=utf-8" );
-    $url = 'https://brcep.herokuapp.com/78048000/json';
+    $url = 'https://brcep-dlfeappmhe.now.sh/78048000/json';
     $json = file_get_contents($url);
     echo $json;
 ?>
@@ -245,7 +245,7 @@ var
     Response: TStringStream;
     URL: String;
 begin
-    URL := 'https://brcep.herokuapp.com/78048000/json';
+    URL := 'https://brcep-dlfeappmhe.now.sh/78048000/json';
     MemoReturn.Lines.Clear;
     try
         HTTP := TIdHTTP.Create;

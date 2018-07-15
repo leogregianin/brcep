@@ -14,8 +14,8 @@ import (
 
 const helpMessage = `Bem-vindo ao brcep!
 
-Utilize desta forma: https://brcep.herokuapp.com/cep/json
-Por exemplo: https://brcep.herokuapp.com/78048000/json
+Utilize desta forma: https://brcep-dlfeappmhe.now.sh/cep/json
+Por exemplo: https://brcep-dlfeappmhe.now.sh/78048000/json
 
 Resultado: 
 
