@@ -18,8 +18,7 @@ Tópicos
 =================
 
   * [Acesso a API](#acesso-a-api)
-  	* [Heroku](#heroku)
-  	* [Zeit Now](#zeit-now)
+  	* [Acesso](#acesso)
   	* [Response](#response)
   * [Exemplos](#exemplos)
 	* [Curl](#curl)
@@ -46,10 +45,7 @@ Tópicos
 
 ## Acesso a API
 
-### Heroku
-Para visualizar os dados acesse [https://brcep-dlfeappmhe.now.sh/78048000/json](https://brcep-dlfeappmhe.now.sh/78048000/json).
-
-### Zeit Now
+### Acesso
 Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](https://brcep-qnlohrjtbl.now.sh/78048000/json).
 
 ### Response
