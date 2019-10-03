@@ -8,7 +8,9 @@
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
+.docker_build
 *.out
+vendor
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
