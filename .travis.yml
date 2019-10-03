@@ -1,12 +1,8 @@
   language: go
   go:
-    - 1.9
-  before_install:
-    - go get -u github.com/gin-gonic/gin
-    - go get -u github.com/subosito/gotenv
-  script: 
-    - go test -bench .
-    - go test -race -coverprofile=coverage.txt -covermode=atomic
+    - 1.13.x
+  script:
+    - make test
   after_success:
   - bash <(curl -s https://codecov.io/bash)
   notifications:
