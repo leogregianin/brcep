@@ -74,14 +74,14 @@ Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](
 
 ### curl
 ```curl
-curl https://brcep-dlfeappmhe.now.sh/78048000/json
+curl https://brcep-qnlohrjtbl.now.sh/78048000/json
 ```
 
 ### Javascript
 ```javascript
 var request = require('request');
 var options = {
-    url: 'https://brcep-dlfeappmhe.now.sh/78048000/json',
+    url: 'https://brcep-qnlohrjtbl.now.sh/78048000/json',
     }
 };
 function callback(error, response, body) {
@@ -98,7 +98,7 @@ request(options, callback);
 import urllib.request
 import json
 
-url = "https://brcep-dlfeappmhe.now.sh/78048000/json"
+url = "https://brcep-qnlohrjtbl.now.sh/78048000/json"
 result = urllib.request.urlopen(url)
 data = result.read()
 encoding = result.info().get_content_charset('utf-8')
@@ -164,7 +164,7 @@ require "net/http"
 require "uri"
 require 'json'
 
-url = "https://brcep-dlfeappmhe.now.sh/78048000/json"
+url = "https://brcep-qnlohrjtbl.now.sh/78048000/json"
 uri = URI.parse(url)
 
 http = Net::HTTP.new(uri.host, uri.port)
@@ -182,7 +182,7 @@ end
 ```php
 <?php
     header ( "Content-Type: application/json;charset=utf-8" );
-    $url = 'https://brcep-dlfeappmhe.now.sh/78048000/json';
+    $url = 'https://brcep-qnlohrjtbl.now.sh/78048000/json';
     $json = file_get_contents($url);
     echo $json;
 ?>
@@ -190,7 +190,43 @@ end
 
 ### Java
 ```java
+public class BrCepGetExample {
+    private static final String URL = "https://brcep-qnlohrjtbl.now.sh/78048000/json";
 
+    public static void main(String[] args) {
+        BrCepGetExample http = new BrCepGetExample();
+
+        try {
+            System.out.println("Response from brcep endpoint: " + http.sendGet());
+        } catch (Exception e) {
+            System.out.println("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    private String sendGet() throws Exception {
+        URL obj = new URL(URL);
+
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+
+        if (con.getResponseCode() != 200) {
+            throw new IllegalStateException("Unexpected status code: " + con.getResponseCode());
+        }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+        String inputLine;
+
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+
+        in.close();
+
+        return response.toString();
+    }
+}
 ```
 
 ### C-Sharp
@@ -241,7 +277,7 @@ var
     Response: TStringStream;
     URL: String;
 begin
-    URL := 'https://brcep-dlfeappmhe.now.sh/78048000/json';
+    URL := 'https://brcep-qnlohrjtbl.now.sh/78048000/json';
     MemoReturn.Lines.Clear;
     try
         HTTP := TIdHTTP.Create;

@@ -15,3 +15,6 @@
 /debug
 /.vscode
 /.env
+
+# IDEs
+.idea
