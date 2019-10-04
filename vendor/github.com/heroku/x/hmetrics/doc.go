@@ -1,5 +1,0 @@
-/*
-package hmetrics ...
-*/
-
-package hmetrics

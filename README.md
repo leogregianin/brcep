@@ -1,6 +1,4 @@
-
-<img src="img/gopher.png" width="500" height="500" />
-
+![brcepgopher](docs/img/gopher.png)
 
 # brcep 
 
@@ -10,43 +8,68 @@ API para acesso a informações dos CEPs do Brasil. A ideia central é não fica
 
 O projeto __brcep__ faz consultas às APIs [ViaCEP](http://viacep.com.br) e [CEPAberto](http://cepaberto.com).
 
+![brcep](docs/img/brcep.png)
 
-![brcep](img/brcep.png)
+### Sidecar Pattern
+
+A idea desse projeto é que você utilize a imagem do Docker como um [sidecar](https://dzone.com/articles/sidecar-design-pattern-in-your-microservices-ecosy-1) para sua aplicação atual. Esse projeto não é uma biblioteca pra consumir APIs, mais sim um server que deve rodar ao lado (dai o sidecar) da sua aplicação atual, e quando você precisar fazer a requisição de um cep, você fará a requisição para o endpoint do sidecar e não diretamente para uma API. Dessa forma você ganha a vantagem de um middleware que fará o uso correto de multiplas APIs. 
+
+Considere o docker-compose abaixo para entender melhor:
+
+```yaml
+version: '2.1'
+
+services:
+  myapp:
+    container_name: myapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+  brcep:
+    image: brcep:latest
+    ports:
+      - "8000:8000"
+    links:
+      - myapp
+    container_name: brcep
+    environment:
+      - PORT=8000
+```
+
+A idea é que sua aplicação rode na porta 3000 e o brcep rode na porta 8000, considerando os multiplos [exemplos](./docs/exemplos.md) que temos definido, substituindo a URL por http://brcep/78048000/json. Sendo assim a sua aplicação agora faz o consumo de forma transparente de diversas APIs através do brcep. 
 
 
 Tópicos
 =================
 
-  * [Acesso a API](#acesso-a-api)
+  * [Exemplo API](#exemplo-api)
   	* [Acesso](#acesso)
   	* [Response](#response)
-  * [Exemplos](#exemplos)
-	* [Curl](#curl)
-	* [Javascript](#javascript)
-	* [Python](#python)
-	* [Golang](#golang)
-	* [Ruby](#ruby)
-	* [PHP](#php)
-	* [Java](#java)
-	* [C#](#c-sharp)
-	* [Delphi](#delphi)
-  * [Rodar localmente](#rodar-localmente)
-	* [Instalação do Golang](#instalação-do-golang)
-	* [Instalação dos pacotes](#instalação-dos-pacotes)
-	* [Configuração do ambiente](#configuração-do-ambiente)
-	* [Executar os testes](#executar-os-testes)
-    * [Executar o server](#executar-o-server)
-	* [Acessar a API](#acessar-a-api)
-  * [Deploy](#deploy)
-    * [Deploy no Heroku](#deploy-no-heroku) 
-    * [Deploy no Docker via Zeit Now](#deploy-no-docker-via-zeit-now) 
+  * [Execução](#execução)
+  	* [Configuração do ambiente](#configurao-do-ambiente)
+  	* [Executar com Docker](#executar-com-docker)
+  	* [Executando localmente](#executando-localmente)
+  	* [Executando testes](#executando-testes)
+  * [Exemplos](./docs/exemplos.md)
+	* [Curl](./docs/exemplos.md#curl)
+	* [Javascript](./docs/exemplos.md#javascript)
+	* [Python](./docs/exemplos.md#python)
+	* [Golang](./docs/exemplos.md#golang)
+	* [Ruby](./docs/exemplos.md#ruby)
+	* [PHP](./docs/exemplos.md#php)
+	* [Java](./docs/exemplos.md#java)
+	* [C#](./docs/exemplos.md#c-sharp)
+	* [Delphi](./docs/exemplos.md#delphi)
   * [Licença de uso](#licença-de-uso)
 
 
-## Acesso a API
+## Exemplo API
 
 ### Acesso
-Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](https://brcep-qnlohrjtbl.now.sh/78048000/json).
+
+Para facilitar a visualização do que esperar deste projeto, a versão atual está disponível para visualização dos dados em [https://brcep-qnlohrjtbl.now.sh/78048000/json](https://brcep-qnlohrjtbl.now.sh/78048000/json).
 
 ### Response
 
@@ -70,263 +93,59 @@ Para visualizar os dados acesse [https://brcep-qnlohrjtbl.now.sh/78048000/json](
 * Os campos "complemento", "latitude" e "longitude" podem retornar em branco dependendo da API consultada.
 * Os demais campos sempre retornarão valores.
 
-## Exemplos
-
-### curl
-```curl
-curl https://brcep-dlfeappmhe.now.sh/78048000/json
-```
-
-### Javascript
-```javascript
-var request = require('request');
-var options = {
-    url: 'https://brcep-dlfeappmhe.now.sh/78048000/json',
-    }
-};
-function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-        var info = JSON.parse(body);
-        console.log(info);
-    }
-}
-request(options, callback);
-```
-
-### Python
-```python
-import urllib.request
-import json
-
-url = "https://brcep-dlfeappmhe.now.sh/78048000/json"
-result = urllib.request.urlopen(url)
-data = result.read()
-encoding = result.info().get_content_charset('utf-8')
-print(json.loads(data.decode(encoding)))
-```
-
-### Golang
-```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-    "log"
-    "net/http"
-    "net/url"
-)
-
-type brCep struct {
-	Cep         string `json:"cep"`
-	Endereco    string `json:"endereco"`
-	Bairro      string `json:"bairro"`
-	Complemento string `json:"complemento"`
-	Cidade      string `json:"cidade"`
-	Uf          string `json:"uf"`
-	Latitude    string `json:"latitude"`
-	Longitude   string `json:"longitude"`
-	Ddd         string `json:"ddd"`
-	Unidade     string `json:"unidade"`
-	Ibge        string `json:"ibge"`
-}
-
-func main() {
-    cep := "78048000"
-    cepSeguro := url.QueryEscape(cep)
-
-    url := fmt.Sprintf("https://brcep-dlfeappmhe.now.sh/%s/json", cepSeguro)
-
-    req, err := http.NewRequest("GET", url, nil)
-
-    client := &http.Client{}
-
-    resp, err := client.Do(req)
-    if err != nil {
-        log.Fatal("Do: ", err)
-        return
-    }
-
-    defer resp.Body.Close()
-    var resultado brCep
-
-    if err := json.NewDecoder(resp.Body).Decode(&resultado); err != nil {
-        log.Println(err)
-    }
-
-    fmt.Printf("%+v\n", resultado)
-}
-```
-
-### Ruby
-```ruby
-require "net/http"
-require "uri"
-require 'json'
-
-url = "https://brcep-dlfeappmhe.now.sh/78048000/json"
-uri = URI.parse(url)
-
-http = Net::HTTP.new(uri.host, uri.port)
-http.use_ssl = true if url =~ /^https/
-
-request = Net::HTTP::Post.new(uri.request_uri, 'Content-Type' => 'application/json')
-response = http.request(request)
-if response.code == "200"
-    result = JSON.parse(response.body)
-    puts(result)
-end
-```
-
-### PHP
-```php
-<?php
-    header ( "Content-Type: application/json;charset=utf-8" );
-    $url = 'https://brcep-dlfeappmhe.now.sh/78048000/json';
-    $json = file_get_contents($url);
-    echo $json;
-?>
-```
-
-### Java
-```java
-
-```
-
-### C-Sharp
-```c#
-using System;
-using System.Windows.Forms;
-using System.Net;
-using System.IO;
-
-namespace WindowsFormsApp1
-{
-    public partial class Form1 : Form
-    {
-        public string UserAgent = @"Mozilla/5.0 (Windows; Windows NT 6.1) AppleWebKit/534.23 (KHTML, like Gecko) Chrome/11.0.686.3 Safari/534.23";
-
-        public string HttpGet(string url)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = UserAgent;
-            request.KeepAlive = false;
-            request.Method = "GET";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            StreamReader sr = new StreamReader(response.GetResponseStream());
-            return sr.ReadToEnd();
-        }
-
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            richTextBox2.Text = HttpGet(textBox2.Text);
-        }
-    }
-}
-```
-
-### Delphi
-```pascal
-uses idHTTP;
-
-procedure TForm1.ButtonCEPClick(Sender: TObject);
-var
-    HTTP: TIdHTTP;
-    IDSSLHandler : TIdSSLIOHandlerSocketOpenSSL;    
-    Response: TStringStream;
-    URL: String;
-begin
-    URL := 'https://brcep-dlfeappmhe.now.sh/78048000/json';
-    MemoReturn.Lines.Clear;
-    try
-        HTTP := TIdHTTP.Create;
-        IDSSLHandler := TIdSSLIOHandlerSocketOpenSSL.Create;	
-        HTTP.IOHandler := IDSSLHandler;	
-        Response := TStringStream.Create('');
-        HTTP.Get(URL, Response);
-        if HTTP.ResponseCode = 200 then
-           MemoReturn.Text := Utf8ToAnsi( Response.DataString );
-    finally
-        Response.Free;
-        HTTP.Destroy;
-    end;
-end;
-```
-
-## Rodar localmente
-
-### Instalação do Golang
-
-Instalar o Golang [https://golang.org/dl](https://golang.org/dl).
-
-### Instalação dos pacotes
-
-```sh
-go get -u github.com/gin-gonic/gin
-go get -u github.com/subosito/gotenv
-```
+## Execução
 
 ### Configuração do ambiente
 
 * A API do CEPAberto necessita do token de autorização e a API do ViaCEP não necessita de token.
 * Renomear o arquivo .env.example para .env e incluir o seu token de acesso da API CEPAberto.com
 
-### Executar os testes
+### Executar com Docker
+
+Utilizando Docker (imagem `golang:alpine`) com o comando abaixo a imagem será compilada e executada na porta `8000`. 
 
 ```sh
-$ go test -bench .
+$ make run.docker
+
+___.
+\_ |_________   ____  ____ ______
+| __ \_  __ \_/ ___\/ __ \\____ \
+| \_\ \  | \/\  \__\  ___/|  |_> >
+|___  /__|    \___  >___  >   __/
+    \/            \/    \/|__|
+http://github.com/leogregianin/brcep
+
+starting server on 8000
 ```
 
-![brcep](img/unittests.png)
+Para visualizar os dados acesse [http://localhost:8000/78048000/json](http://localhost:8000/78048000/json).
 
-### Executar o server
+### Executando localmente
+
+Considerando que você tem o Golang 1.13 instalado localmente, o comando abaixo irá efetuar o download das dependencias e compilar um binário para execução local.
 
 ```sh
-$ go run .\server.go .\cepaberto.go .\viacep.go .\util.go
+$ make run.local
 ```
 
-ou 
+Você pode escolher outras arquiteturas para compilar o binário caso precise fazer o deploy do binário para outros sistemas:
+
+```bash
+$ make build.local
+$ make build.linux.armv8
+$ make build.linux.armv7
+$ make build.linux
+$ make build.osx
+$ make build.windows
+```
+
+Os comandos acima geran um binário na pasta `bin`.
+
+### Executando testes
 
 ```sh
-$ go build && ./brcep.exe
+$ make test
 ```
-
-
-![brcep](img/server.png)
-
-
-### Acessar a API
-
-Para visualizar os dados acesse [http://localhost:3000/78048000/json](http://localhost:3000/78048000/json).
-
-
-## Deploy
-
-### Deploy no Heroku
-
-What's [Heroku](https://www.heroku.com)?
-
-```sh
-$ heroku login
-$ git add .
-$ git commit -am "deploy"
-$ git push heroku master
-```
-
-### Deploy no Docker via Zeit Now
-
-What's [Now](https://zeit.co/now)?
-
-```sh
-$ now login
-$ now
-```
-
 
 ## Licença de uso
 
