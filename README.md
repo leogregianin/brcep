@@ -12,7 +12,7 @@ The __brcep__ project makes API queries [ViaCEP](http://viacep.com.br) e [CEPAbe
 
 ### Sidecar Pattern
 
-The idea of this project is that you use the Docker image as a [sidecar] (https://dzone.com/articles/sidecar-design-pattern-in-your-microservices-ecosy-1) for your current application. This project is not a library for consuming APIs, but a server that should run alongside (hence sidecar) your current application, and when you need to request a zip code, you will request the sidecar endpoint and not directly to an API. This gives you the advantage of middleware that will make the correct use of multiple APIs. 
+The idea of this project is that you use the Docker image as a [sidecar](https://dzone.com/articles/sidecar-design-pattern-in-your-microservices-ecosy-1) for your current application. This project is not a library for consuming APIs, but a server that should run alongside (hence sidecar) your current application, and when you need to request a zip code, you will request the sidecar endpoint and not directly to an API. This gives you the advantage of middleware that will make the correct use of multiple APIs. 
 
 
 Consider the docker-compose below to better understand:
@@ -39,7 +39,7 @@ services:
       - PORT=8000
 ```
 
-The idea is that your application runs on port 3000 and brcep runs on port 8000, considering the multiple [examples] (./ docs / examples.md) we have defined, replacing the URL with http: // brcep / 78048000 / json . So your application now transparently consumes various APIs through brcep.
+The idea is that your application runs on port 3000 and brcep runs on port 8000, considering the multiple [examples](./ docs / examples.md) we have defined, replacing the URL with http://brcep/78048000/json. So your application now transparently consumes various APIs through brcep.
 
 Topics
 =================
@@ -90,7 +90,7 @@ To make it easier to see what to expect from this project, the current version i
 }
 ```
 
-* The "CEp" field returns numbers only.
+* The "CEP" field returns numbers only.
 * The "complement", "latitude" and "longitude" fields may be left blank depending on the API queried.
 * The remaining fields will always return values.
 
