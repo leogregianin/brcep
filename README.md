@@ -39,19 +39,19 @@ services:
       - PORT=8000
 ```
 
-The idea is that your application runs on port 3000 and brcep runs on port 8000, considering the multiple [examples](./ docs / examples.md) we have defined, replacing the URL with http://brcep/78048000/json. So your application now transparently consumes various APIs through brcep.
+The idea is that your application runs on port 3000 and brcep runs on port 8000, considering the multiple [examples](./docs/examples.md) we have defined, replacing the URL with http://brcep/78048000/json. So your application now transparently consumes various APIs through brcep.
 
 Topics
 =================
 
-  * [API example](#example-api)
-  	* [Access](#Access)
+  * [API example](#api-example)
+  	* [Access](#access)
   	* [Response](#response)
   * [Execution](#Execution)
-  	* [Environment Setting](#Environment Setting)
-  	* [Run with Docker](#Run with Docker)
-  	* [Running locally](#Running locally)
-  	* [Running tests](#Running tests)
+  	* [Environment Setting](#environment-setting)
+  	* [Run with Docker](#run-with-docker)
+  	* [Running locally](#running-locally)
+  	* [Running tests](#running-tests)
   * [Examples](./docs/exemplos.md)
 	* [Curl](./docs/exemplos.md#curl)
 	* [Javascript](./docs/exemplos.md#javascript)
@@ -62,7 +62,7 @@ Topics
 	* [Java](./docs/exemplos.md#java)
 	* [C#](./docs/exemplos.md#c-sharp)
 	* [Delphi](./docs/exemplos.md#delphi)
-  * [Use license](#Use license)
+  * [Use license](#use-license)
 
 
 ## API example
