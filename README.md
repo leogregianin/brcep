@@ -100,23 +100,25 @@ To make it easier to see what to expect from this project, the current version i
 * The CEPAberto API requires the authorization token and the ViaCEP API does not need the token.
 * Rename the .env.example file to .env and include your CEPAberto.com API access token
 
-### Run with Docker
+## Running with Docker Hub
+
+```bash
+$ docker run \
+    -e "BRCEP_ADDRESS=:8000" \
+    -e "BRCEP_OPERATION_MODE=debug" \
+    -e "BRCEP_PREFERRED_API=viacep" \
+    -p 127.0.0.1:8000:8000/tcp leogregianin/brcep
+```
+
+### Run with Docker from Local
 
 Using Docker (`golang:alpine` image) with the command below the image will be compiled and executed on port `8000`. 
 
 ```sh
 $ make run.docker
-
-___.
-\_ |_________   ____  ____ ______
-| __ \_  __ \_/ ___\/ __ \\____ \
-| \_\ \  | \/\  \__\  ___/|  |_> >
-|___  /__|    \___  >___  >   __/
-    \/            \/    \/|__|
-http://github.com/leogregianin/brcep
-
-starting server on 8000
 ```
+
+This will build the image with the name `leogregianin/brcep` and run it with the `.env.example` file if no `.env` file is present at the directory. To use other environment variables, please create a `.env` file next to the `.env.example` file.
 
 To view data go to [http://localhost:8000/78048000/json](http://localhost:8000/78048000/json).
 
