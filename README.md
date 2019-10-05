@@ -6,14 +6,13 @@
 
 API for accessing information from Brazilian CEPs. The central idea is not to be dependent on a specific API, but to have the ease of accessing __brcep__ and it is in charge of consulting various sources and returning the CEP information quickly and easily.
 
-The __brcep__ project makes API queries [ViaCEP](http://viacep.com.br) e [CEPAberto](http://cepaberto.com).
+Currently we support API queries to [ViaCEP](http://viacep.com.br) and [CEPAberto](http://cepaberto.com). Your help is welcome to implement the `CepApi` interface and introduce new APIs support.
 
 ![brcep](docs/img/brcep.png)
 
 ### Sidecar Pattern
 
 The idea of this project is that you use the Docker image as a [sidecar](https://dzone.com/articles/sidecar-design-pattern-in-your-microservices-ecosy-1) for your current application. This project is not a library for consuming APIs, but a server that should run alongside (hence sidecar) your current application, and when you need to request a zip code, you will request the sidecar endpoint and not directly to an API. This gives you the advantage of middleware that will make the correct use of multiple APIs. 
-
 
 Consider the docker-compose below to better understand:
 
