@@ -25,6 +25,8 @@ func (s *FlagLoaderSuite) TestNewFlagLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 		"-address=:8080",
 		"-mode=test",
 		"-preferred-api=cep-aberto",
+		"-via-cep-url=http://localhost:8000/",
+		"-cep-aberto-url=http://localhost:8010/",
 		"-cep-aberto-token=token-sample",
 	}
 
@@ -37,5 +39,7 @@ func (s *FlagLoaderSuite) TestNewFlagLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 	c.Check(cfg.Address, gc.Equals, ":8080")
 	c.Check(cfg.OperationMode, gc.Equals, "test")
 	c.Check(cfg.PreferredAPI, gc.Equals, "cep-aberto")
+	c.Check(cfg.ViaCepUrl, gc.Equals, "http://localhost:8000/")
+	c.Check(cfg.CepAbertoUrl, gc.Equals, "http://localhost:8010/")
 	c.Check(cfg.CepAbertoToken, gc.Equals, "token-sample")
 }

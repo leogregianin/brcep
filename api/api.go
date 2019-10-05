@@ -2,8 +2,6 @@ package api
 
 import (
 	"regexp"
-
-	"github.com/gin-gonic/gin"
 )
 
 // BrCepResult holds the standardized JSON result from the API
@@ -24,11 +22,7 @@ type BrCepResult struct {
 type Api interface {
 	// Fetch should fetch the result from the
 	// API and return as BrCepResult
-	Fetch(ctx *gin.Context, cep string) (*BrCepResult, error)
-
-	// Name should return a unique name for
-	// the API implementation
-	Name() string
+	Fetch(cep string) (*BrCepResult, error)
 }
 
 var cepSanitizer = regexp.MustCompile("[^0-9]+")

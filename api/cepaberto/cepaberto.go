@@ -5,56 +5,60 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 
-	"github.com/gin-gonic/gin"
 	"github.com/leogregianin/brcep/api"
 )
 
 const (
-	cepAbertoApi = "cep-aberto"
-	cepAbertoApiUrl = "http://www.cepaberto.com/api/v3/cep?cep=%s"
+	ID = "cepaberto"
+
+	defaultCepAbertoApiUrl = "http://www.cepaberto.com/"
 )
 
 type CepAbertoApi struct {
-	token string
+	url    string
+	token  string
+	client *http.Client
 }
 
 // CepAbertoResult holds the result from cepaberto.com API
 type CepAbertoResult struct {
-	Cep         string `json:"cep"`
-	Logradouro  string `json:"logradouro"`
-	Bairro      string `json:"bairro"`
-	Complemento string ``
-	Cidade      struct {
+	Cep        string `json:"cep"`
+	Logradouro string `json:"logradouro"`
+	Bairro     string `json:"bairro"`
+	Cidade     struct {
 		Nome string `json:"nome"`
+		DDD  int    `json:"ddd"`
+		Ibge string `json:"ibge"`
 	}
 	Estado struct {
 		Sigla string `json:"sigla"`
 	}
 	Latitude  string `json:"latitude"`
 	Longitude string `json:"longitude"`
-	UfDdd     struct {
-		DDD string `json:"ddd"`
-	}
-	Unidade    string ``
-	CodigoIbge struct {
-		Ibge string `json:"ibge"`
-	}
 }
 
-func NewCepAbertoApi(token string) *CepAbertoApi {
-	return &CepAbertoApi{token}
+func NewCepAbertoApi(url, token string, client *http.Client) *CepAbertoApi {
+	if len(url) <= 0 {
+		url = defaultCepAbertoApiUrl
+	}
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	return &CepAbertoApi{url, token, client}
 }
 
-func (api *CepAbertoApi) Fetch(_ *gin.Context, cep string) (*api.BrCepResult, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf(cepAbertoApiUrl, url.QueryEscape(cep)), nil)
+func (api *CepAbertoApi) Fetch(cep string) (*api.BrCepResult, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf(api.url+"api/v3/cep?cep=%s", url.QueryEscape(cep)), nil)
 	if err != nil {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf(`Token token=%s`, api.token))
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := api.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
 	}
@@ -74,24 +78,18 @@ func (api *CepAbertoApi) Fetch(_ *gin.Context, cep string) (*api.BrCepResult, er
 	return result.toBrCepResult(), nil
 }
 
-func (api *CepAbertoApi) Name() string {
-	return cepAbertoApi
-}
-
 func (r CepAbertoResult) toBrCepResult() *api.BrCepResult {
 	var result = new(api.BrCepResult)
 
 	result.Cep = r.Cep
 	result.Endereco = r.Logradouro
 	result.Bairro = r.Bairro
-	result.Complemento = r.Complemento
 	result.Cidade = r.Cidade.Nome
 	result.Uf = r.Estado.Sigla
 	result.Latitude = r.Latitude
 	result.Longitude = r.Longitude
-	result.DDD = r.UfDdd.DDD
-	result.Unidade = r.Unidade
-	result.Ibge = r.CodigoIbge.Ibge
+	result.DDD = strconv.Itoa(r.Cidade.DDD)
+	result.Ibge = r.Cidade.Ibge
 
 	return result
 }

@@ -34,15 +34,16 @@ func main() {
 	gin.SetMode(cfg.GetGinOperationMode())
 
 	var (
-		viaCep  = new(viacep.ViaCepApi)
 		cepApis = map[string]api.Api{
-			viaCep.Name(): viaCep,
+			viacep.ID: viacep.NewViaCepApi(cfg.ViaCepUrl, http.DefaultClient),
 		}
 	)
 
 	if len(cfg.CepAbertoToken) > 0 {
-		var cepAberto = cepaberto.NewCepAbertoApi(cfg.CepAbertoToken)
-		cepApis[cepAberto.Name()] = cepAberto
+		cepApis[cepaberto.ID] = cepaberto.NewCepAbertoApi(
+			cfg.CepAbertoUrl,
+			cfg.CepAbertoToken,
+			http.DefaultClient)
 	}
 
 	var cepHandler = &handler.CepHandler{

@@ -16,6 +16,8 @@ type Config struct {
 	Address        string
 	OperationMode  string
 	PreferredAPI   string
+	ViaCepUrl      string
+	CepAbertoUrl   string
 	CepAbertoToken string
 }
 

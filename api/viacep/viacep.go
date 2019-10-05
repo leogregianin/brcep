@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/leogregianin/brcep/api"
 )
 
 const (
-	viaCepApi = "viacep"
-	viaCepApiUrl = "http://viacep.com.br/ws/%s/json/"
+	ID = "viacep"
+
+	defaultViaCepApiUrl = "http://viacep.com.br/"
 )
 
-type ViaCepApi struct {}
+type ViaCepApi struct {
+	url string
+	client *http.Client
+}
 
 // ViaCepResult holds the result from viacep.com.br API
 type ViaCepResult struct {
@@ -31,8 +34,24 @@ type ViaCepResult struct {
 	Ibge        string `json:"ibge"`
 }
 
-func (api *ViaCepApi) Fetch(_ *gin.Context, cep string) (*api.BrCepResult, error) {
-	resp, err := http.Get(fmt.Sprintf(viaCepApiUrl, cep))
+func NewViaCepApi(url string, client *http.Client) *ViaCepApi {
+	if len(url) <= 0 {
+		url = defaultViaCepApiUrl
+	}
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	return &ViaCepApi{url, client}
+}
+
+func (api *ViaCepApi) Fetch(cep string) (*api.BrCepResult, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf(api.url + "ws/%s/json/", cep), nil)
+	if err != nil {
+		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
+	}
+
+	resp, err := api.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("ViaCepApi.Fetch %v", err)
 	}
@@ -50,10 +69,6 @@ func (api *ViaCepApi) Fetch(_ *gin.Context, cep string) (*api.BrCepResult, error
 	}
 
 	return result.toBrCepResult(), nil
-}
-
-func (api *ViaCepApi) Name() string {
-	return viaCepApi
 }
 
 func (r ViaCepResult) toBrCepResult() *api.BrCepResult {

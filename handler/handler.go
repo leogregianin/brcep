@@ -22,7 +22,7 @@ func (h *CepHandler) Handle(ctx *gin.Context) {
 		return
 	}
 
-	result, err := preferredApi.Fetch(ctx, cep)
+	result, err := preferredApi.Fetch(cep)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
