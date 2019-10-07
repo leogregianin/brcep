@@ -1,5 +1,5 @@
 FROM golang:alpine
-ADD . /go/src/zeit/brcep
-RUN go install zeit/brcep
+ADD . /go/src/leogregianin/brcep
+RUN go install leogregianin/brcep
 CMD ["/go/bin/brcep"]
 EXPOSE 8000
