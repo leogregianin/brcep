@@ -6,14 +6,13 @@
 
 API for accessing information from Brazilian CEPs. The central idea is not to be dependent on a specific API, but to have the ease of accessing __brcep__ and it is in charge of consulting various sources and returning the CEP information quickly and easily.
 
-The __brcep__ project makes API queries [ViaCEP](http://viacep.com.br) e [CEPAberto](http://cepaberto.com).
+Currently we support API queries to [ViaCEP](http://viacep.com.br) and [CEPAberto](http://cepaberto.com). Your help is welcome to implement the `CepApi` interface and introduce new APIs support.
 
 ![brcep](docs/img/brcep.png)
 
 ### Sidecar Pattern
 
 The idea of this project is that you use the Docker image as a [sidecar](https://dzone.com/articles/sidecar-design-pattern-in-your-microservices-ecosy-1) for your current application. This project is not a library for consuming APIs, but a server that should run alongside (hence sidecar) your current application, and when you need to request a zip code, you will request the sidecar endpoint and not directly to an API. This gives you the advantage of middleware that will make the correct use of multiple APIs. 
-
 
 Consider the docker-compose below to better understand:
 
@@ -101,23 +100,25 @@ To make it easier to see what to expect from this project, the current version i
 * The CEPAberto API requires the authorization token and the ViaCEP API does not need the token.
 * Rename the .env.example file to .env and include your CEPAberto.com API access token
 
-### Run with Docker
+## Running with Docker Hub
+
+```bash
+$ docker run \
+    -e "BRCEP_ADDRESS=:8000" \
+    -e "BRCEP_OPERATION_MODE=debug" \
+    -e "BRCEP_PREFERRED_API=viacep" \
+    -p 127.0.0.1:8000:8000/tcp leogregianin/brcep
+```
+
+### Run with Docker from Local
 
 Using Docker (`golang:alpine` image) with the command below the image will be compiled and executed on port `8000`. 
 
 ```sh
 $ make run.docker
-
-___.
-\_ |_________   ____  ____ ______
-| __ \_  __ \_/ ___\/ __ \\____ \
-| \_\ \  | \/\  \__\  ___/|  |_> >
-|___  /__|    \___  >___  >   __/
-    \/            \/    \/|__|
-http://github.com/leogregianin/brcep
-
-starting server on 8000
 ```
+
+This will build the image with the name `leogregianin/brcep` and run it with the `.env.example` file if no `.env` file is present at the directory. To use other environment variables, please create a `.env` file next to the `.env.example` file.
 
 To view data go to [http://localhost:8000/78048000/json](http://localhost:8000/78048000/json).
 
