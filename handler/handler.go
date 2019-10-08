@@ -18,8 +18,10 @@ type responseError struct {
 	Error string `json:"error"`
 }
 
-var prefferedApiError = &responseError{
-	Error: "preferred api not available",
+func renderJSON(w http.ResponseWriter, code int, data interface{}) {
+	j, _ := json.Marshal(data)
+	w.WriteHeader(code)
+	w.Write(j)
 }
 
 // Handle handles the request ..
@@ -30,23 +32,17 @@ func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	preferredAPI, ok := h.CepApis[h.PreferredAPI]
 	if !ok {
-		j, _ := json.Marshal(prefferedApiError)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(j)
+		renderJSON(w, http.StatusInternalServerError, &responseError{Error: "preferred api not available"})
 		return
 	}
 
 	result, err := preferredAPI.Fetch(cep)
 	if err != nil {
-		j, _ := json.Marshal(&responseError{Error: err.Error()})
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(j)
+		renderJSON(w, http.StatusInternalServerError, &responseError{Error: err.Error()})
 		return
 	}
 
 	result.Sanitize()
 
-	j, _ := json.Marshal(result)
-	w.WriteHeader(http.StatusOK)
-	w.Write(j)
+	renderJSON(w, http.StatusOK, result)
 }
