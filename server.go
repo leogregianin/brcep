@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/leogregianin/brcep/api"
 	"github.com/leogregianin/brcep/api/cepaberto"
 	"github.com/leogregianin/brcep/api/viacep"
@@ -27,11 +26,10 @@ func main() {
 		flag.NewFlagLoader(),
 		env.NewEnvLoader(),
 	})
+
 	if err != nil {
 		panic(err)
 	}
-
-	gin.SetMode(cfg.GetGinOperationMode())
 
 	var (
 		cepApis = map[string]api.API{
@@ -51,9 +49,9 @@ func main() {
 		CepApis:      cepApis,
 	}
 
-	router := gin.Default()
-	router.Use(gin.ErrorLogger())
-	router.GET("/:cep/json", cepHandler.Handle)
+	router := http.NewServeMux()
+
+	router.HandleFunc("/", cepHandler.Handle)
 
 	server := &http.Server{
 		Addr:           cfg.Address,
