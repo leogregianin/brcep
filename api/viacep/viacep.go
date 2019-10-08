@@ -15,7 +15,7 @@ const (
 )
 
 type ViaCepApi struct {
-	url string
+	url    string
 	client *http.Client
 }
 
@@ -46,7 +46,7 @@ func NewViaCepApi(url string, client *http.Client) *ViaCepApi {
 }
 
 func (api *ViaCepApi) Fetch(cep string) (*api.BrCepResult, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf(api.url + "ws/%s/json/", cep), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf(api.url+"ws/%s/json/", cep), nil)
 	if err != nil {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
 	}

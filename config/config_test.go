@@ -12,7 +12,7 @@ var _ = gc.Suite(&ConfigSuite{})
 
 type ConfigSuite struct{}
 
-type MockLoader struct {}
+type MockLoader struct{}
 
 func (f *MockLoader) Load(cfg *Config) {
 	return

@@ -17,7 +17,7 @@ var _ = gc.Suite(&HandlerSuite{})
 type HandlerSuite struct{}
 
 type MockApi struct {
-	shouldErr error
+	shouldErr    error
 	shouldReturn *api.BrCepResult
 }
 
@@ -54,7 +54,7 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfNoPreferredAPIFound(c *gc.C)
 func (s *HandlerSuite) TestHandleShouldReturnErrorIfFetchReturnsError(c *gc.C) {
 	var cepHandler = &CepHandler{
 		PreferredApi: "mock",
-		CepApis: map[string]api.Api {
+		CepApis: map[string]api.Api{
 			"mock": &MockApi{
 				shouldErr: errors.New("unknown error"),
 			},
@@ -72,17 +72,17 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfFetchReturnsError(c *gc.C) {
 func (s *HandlerSuite) TestHandleShouldSucceed(c *gc.C) {
 	var cepHandler = &CepHandler{
 		PreferredApi: "mock",
-		CepApis: map[string]api.Api {
+		CepApis: map[string]api.Api{
 			"mock": &MockApi{
 				shouldErr: nil,
 				shouldReturn: &api.BrCepResult{
-					Cep: "01001-000",
-					Endereco: "Praça da Sé",
+					Cep:         "01001-000",
+					Endereco:    "Praça da Sé",
 					Complemento: "lado ímpar",
-					Cidade: "São Paulo",
-					Uf: "SP",
-					Bairro: "Sé",
-					Ibge: "3550308",
+					Cidade:      "São Paulo",
+					Uf:          "SP",
+					Bairro:      "Sé",
+					Ibge:        "3550308",
 				},
 			},
 		},
