@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	defaultAddress = ":8000"
+	defaultAddress       = ":8000"
 	defaultOperationMode = "debug"
-	defaultPreferredAPI = "viacep"
+	defaultPreferredAPI  = "viacep"
 )
 
 type Config struct {

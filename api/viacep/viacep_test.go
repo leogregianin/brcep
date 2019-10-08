@@ -23,7 +23,6 @@ func (s *ViaCepSuite) TestNewViaCepApiSetDefaultUrl(c *gc.C) {
 	c.Check(viaCepApi.client, gc.NotNil)
 }
 
-
 func (s *ViaCepSuite) TestFetchShouldFailWhenInvalidStatusCode(c *gc.C) {
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
