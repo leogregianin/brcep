@@ -16,17 +16,16 @@ var _ = gc.Suite(&HandlerSuite{})
 
 type HandlerSuite struct{}
 
-type MockApi struct {
+type MockAPI struct {
 	shouldErr    error
 	shouldReturn *api.BrCepResult
 }
 
-func (a *MockApi) Fetch(cep string) (*api.BrCepResult, error) {
+func (a *MockAPI) Fetch(cep string) (*api.BrCepResult, error) {
 	if a.shouldErr != nil {
 		return nil, a.shouldErr
-	} else {
-		return a.shouldReturn, nil
 	}
+	return a.shouldReturn, nil
 }
 
 // Hook up gocheck into the "go test" runner.
@@ -40,7 +39,7 @@ func setupRouter(h *CepHandler) *gin.Engine {
 
 func (s *HandlerSuite) TestHandleShouldReturnErrorIfNoPreferredAPIFound(c *gc.C) {
 	var cepHandler = &CepHandler{
-		PreferredApi: "non-existent",
+		PreferredAPI: "non-existent",
 	}
 	router := setupRouter(cepHandler)
 
@@ -53,9 +52,9 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfNoPreferredAPIFound(c *gc.C)
 
 func (s *HandlerSuite) TestHandleShouldReturnErrorIfFetchReturnsError(c *gc.C) {
 	var cepHandler = &CepHandler{
-		PreferredApi: "mock",
-		CepApis: map[string]api.Api{
-			"mock": &MockApi{
+		PreferredAPI: "mock",
+		CepApis: map[string]api.API{
+			"mock": &MockAPI{
 				shouldErr: errors.New("unknown error"),
 			},
 		},
@@ -71,9 +70,9 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfFetchReturnsError(c *gc.C) {
 
 func (s *HandlerSuite) TestHandleShouldSucceed(c *gc.C) {
 	var cepHandler = &CepHandler{
-		PreferredApi: "mock",
-		CepApis: map[string]api.Api{
-			"mock": &MockApi{
+		PreferredAPI: "mock",
+		CepApis: map[string]api.API{
+			"mock": &MockAPI{
 				shouldErr: nil,
 				shouldReturn: &api.BrCepResult{
 					Cep:         "01001-000",

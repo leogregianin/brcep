@@ -12,12 +12,13 @@ const (
 	defaultPreferredAPI  = "viacep"
 )
 
+// Config hold configuration ..
 type Config struct {
 	Address        string
 	OperationMode  string
 	PreferredAPI   string
-	ViaCepUrl      string
-	CepAbertoUrl   string
+	ViaCepURL      string
+	CepAbertoURL   string
 	CepAbertoToken string
 }
 
@@ -27,6 +28,7 @@ type Loader interface {
 	Load(*Config)
 }
 
+// NewConfig creates and returns new config structure ..
 func NewConfig(loaders []Loader) (*Config, error) {
 	if loaders == nil || len(loaders) <= 0 {
 		return nil, fmt.Errorf("NewConfig %v", "no loader provided")
@@ -50,6 +52,7 @@ func NewConfig(loaders []Loader) (*Config, error) {
 	return cfg, nil
 }
 
+// GetGinOperationMode returns gin mode (test or debug) .. by default returns gin release mode ..
 func (c *Config) GetGinOperationMode() string {
 	switch c.OperationMode {
 	case "test":

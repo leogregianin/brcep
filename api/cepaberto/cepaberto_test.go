@@ -18,11 +18,11 @@ type CepAbertoSuite struct{}
 func Test(t *testing.T) { gc.TestingT(t) }
 
 func (s *CepAbertoSuite) TestNewCepAbertoApiSetDefaultUrl(c *gc.C) {
-	var cepAbertoApi = NewCepAbertoApi("", "token-example", nil)
+	var cepAbertoAPI = NewCepAbertoAPI("", "token-example", nil)
 
-	c.Check(cepAbertoApi.url, gc.Equals, "http://www.cepaberto.com/")
-	c.Check(cepAbertoApi.token, gc.Equals, "token-example")
-	c.Check(cepAbertoApi.client, gc.NotNil)
+	c.Check(cepAbertoAPI.url, gc.Equals, "http://www.cepaberto.com/")
+	c.Check(cepAbertoAPI.token, gc.Equals, "token-example")
+	c.Check(cepAbertoAPI.client, gc.NotNil)
 }
 
 func (s *CepAbertoSuite) TestFetchShouldFailWhenInvalidStatusCode(c *gc.C) {
@@ -33,8 +33,8 @@ func (s *CepAbertoSuite) TestFetchShouldFailWhenInvalidStatusCode(c *gc.C) {
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var cepAbertoApi = NewCepAbertoApi("", "token-example", httpClient)
-	_, err := cepAbertoApi.Fetch("78048000")
+	var cepAbertoAPI = NewCepAbertoAPI("", "token-example", httpClient)
+	_, err := cepAbertoAPI.Fetch("78048000")
 
 	c.Check(err, gc.NotNil)
 }
@@ -47,8 +47,8 @@ func (s *CepAbertoSuite) TestFetchShouldFailWhenInvalidJSON(c *gc.C) {
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var cepAbertoApi = NewCepAbertoApi("", "token-example", httpClient)
-	_, err := cepAbertoApi.Fetch("78048000")
+	var cepAbertoAPI = NewCepAbertoAPI("", "token-example", httpClient)
+	_, err := cepAbertoAPI.Fetch("78048000")
 
 	c.Check(err, gc.NotNil)
 }
@@ -76,8 +76,8 @@ func (s *CepAbertoSuite) TestFetchShouldSucceedWhenCorrectRemoteResponse(c *gc.C
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var cepAbertoApi = NewCepAbertoApi("", "token-example", httpClient)
-	result, err := cepAbertoApi.Fetch("78048000")
+	var cepAbertoAPI = NewCepAbertoAPI("", "token-example", httpClient)
+	result, err := cepAbertoAPI.Fetch("78048000")
 
 	c.Check(err, gc.IsNil)
 	c.Check(result, gc.NotNil)

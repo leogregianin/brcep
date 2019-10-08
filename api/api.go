@@ -19,7 +19,8 @@ type BrCepResult struct {
 	Ibge        string `json:"ibge"`
 }
 
-type Api interface {
+// API ..
+type API interface {
 	// Fetch should fetch the result from the
 	// API and return as BrCepResult
 	Fetch(cep string) (*BrCepResult, error)
@@ -27,6 +28,7 @@ type Api interface {
 
 var cepSanitizer = regexp.MustCompile("[^0-9]+")
 
+// Sanitize replaces string with "" ..
 func (r *BrCepResult) Sanitize() {
 	r.Cep = cepSanitizer.ReplaceAllString(r.Cep, "")
 }

@@ -7,22 +7,24 @@ import (
 	"github.com/leogregianin/brcep/api"
 )
 
+// CepHandler ..
 type CepHandler struct {
-	PreferredApi string
-	CepApis      map[string]api.Api
+	PreferredAPI string
+	CepApis      map[string]api.API
 }
 
+// Handle handles the request ..
 func (h *CepHandler) Handle(ctx *gin.Context) {
 	cep := ctx.Param("cep")
 	ctx.Header("Content-Type", "application/json; charset=utf-8")
 
-	preferredApi, ok := h.CepApis[h.PreferredApi]
+	preferredAPI, ok := h.CepApis[h.PreferredAPI]
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "preferred api not available"})
 		return
 	}
 
-	result, err := preferredApi.Fetch(cep)
+	result, err := preferredAPI.Fetch(cep)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

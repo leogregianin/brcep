@@ -39,7 +39,7 @@ func (s *FlagLoaderSuite) TestNewFlagLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 	c.Check(cfg.Address, gc.Equals, ":8080")
 	c.Check(cfg.OperationMode, gc.Equals, "test")
 	c.Check(cfg.PreferredAPI, gc.Equals, "cep-aberto")
-	c.Check(cfg.ViaCepUrl, gc.Equals, "http://localhost:8000/")
-	c.Check(cfg.CepAbertoUrl, gc.Equals, "http://localhost:8010/")
+	c.Check(cfg.ViaCepURL, gc.Equals, "http://localhost:8000/")
+	c.Check(cfg.CepAbertoURL, gc.Equals, "http://localhost:8010/")
 	c.Check(cfg.CepAbertoToken, gc.Equals, "token-sample")
 }
