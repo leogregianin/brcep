@@ -1,9 +1,10 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
+	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/leogregianin/brcep/api"
 )
 
@@ -13,24 +14,39 @@ type CepHandler struct {
 	CepApis      map[string]api.API
 }
 
+type responseError struct {
+	Error string `json:"error"`
+}
+
+var prefferedApiError = &responseError{
+	Error: "preferred api not available",
+}
+
 // Handle handles the request ..
-func (h *CepHandler) Handle(ctx *gin.Context) {
-	cep := ctx.Param("cep")
-	ctx.Header("Content-Type", "application/json; charset=utf-8")
+func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	cep := strings.Split(r.URL.Path, "/")[1]
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	preferredAPI, ok := h.CepApis[h.PreferredAPI]
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "preferred api not available"})
+		j, _ := json.Marshal(prefferedApiError)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(j)
 		return
 	}
 
 	result, err := preferredAPI.Fetch(cep)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		j, _ := json.Marshal(&responseError{Error: err.Error()})
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(j)
 		return
 	}
 
 	result.Sanitize()
 
-	ctx.JSON(http.StatusOK, result)
+	j, _ := json.Marshal(result)
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
 }

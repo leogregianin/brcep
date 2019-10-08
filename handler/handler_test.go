@@ -8,7 +8,6 @@ import (
 
 	gc "gopkg.in/check.v1"
 
-	"github.com/gin-gonic/gin"
 	"github.com/leogregianin/brcep/api"
 )
 
@@ -31,9 +30,9 @@ func (a *MockAPI) Fetch(cep string) (*api.BrCepResult, error) {
 // Hook up gocheck into the "go test" runner.
 func Test(t *testing.T) { gc.TestingT(t) }
 
-func setupRouter(h *CepHandler) *gin.Engine {
-	r := gin.Default()
-	r.GET("/:cep/json", h.Handle)
+func setupRouter(h *CepHandler) *http.ServeMux {
+	r := http.NewServeMux()
+	r.HandleFunc("/", h.Handle)
 	return r
 }
 
@@ -93,5 +92,5 @@ func (s *HandlerSuite) TestHandleShouldSucceed(c *gc.C) {
 	router.ServeHTTP(w, req)
 
 	c.Check(w.Code, gc.Equals, 200)
-	c.Check(w.Body.String(), gc.Equals, "{\"cep\":\"01001000\",\"endereco\":\"Praça da Sé\",\"bairro\":\"Sé\",\"complemento\":\"lado ímpar\",\"cidade\":\"São Paulo\",\"uf\":\"SP\",\"latitude\":\"\",\"longitude\":\"\",\"ddd\":\"\",\"unidade\":\"\",\"ibge\":\"3550308\"}\n")
+	c.Check(w.Body.String(), gc.Equals, "{\"cep\":\"01001000\",\"endereco\":\"Praça da Sé\",\"bairro\":\"Sé\",\"complemento\":\"lado ímpar\",\"cidade\":\"São Paulo\",\"uf\":\"SP\",\"latitude\":\"\",\"longitude\":\"\",\"ddd\":\"\",\"unidade\":\"\",\"ibge\":\"3550308\"}")
 }
