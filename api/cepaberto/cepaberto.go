@@ -11,19 +11,21 @@ import (
 )
 
 const (
+	// ID ..
 	ID = "cepaberto"
 
-	defaultCepAbertoApiUrl = "http://www.cepaberto.com/"
+	defaultCepAbertoAPIURL = "http://www.cepaberto.com/"
 )
 
-type CepAbertoApi struct {
+// API holds the request details for cepaberto.com API ..
+type API struct {
 	url    string
 	token  string
 	client *http.Client
 }
 
-// CepAbertoResult holds the result from cepaberto.com API
-type CepAbertoResult struct {
+// Result holds the result from cepaberto.com API ..
+type Result struct {
 	Cep        string `json:"cep"`
 	Logradouro string `json:"logradouro"`
 	Bairro     string `json:"bairro"`
@@ -39,18 +41,20 @@ type CepAbertoResult struct {
 	Longitude string `json:"longitude"`
 }
 
-func NewCepAbertoApi(url, token string, client *http.Client) *CepAbertoApi {
+// NewCepAbertoAPI creates and returns new Api struct ..
+func NewCepAbertoAPI(url, token string, client *http.Client) *API {
 	if len(url) <= 0 {
-		url = defaultCepAbertoApiUrl
+		url = defaultCepAbertoAPIURL
 	}
 	if client == nil {
 		client = http.DefaultClient
 	}
 
-	return &CepAbertoApi{url, token, client}
+	return &API{url, token, client}
 }
 
-func (api *CepAbertoApi) Fetch(cep string) (*api.BrCepResult, error) {
+// Fetch will return data corresponding to the requested value ..
+func (api *API) Fetch(cep string) (*api.BrCepResult, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(api.url+"api/v3/cep?cep=%s", url.QueryEscape(cep)), nil)
 	if err != nil {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
@@ -69,7 +73,7 @@ func (api *CepAbertoApi) Fetch(cep string) (*api.BrCepResult, error) {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v %d", "invalid status code", resp.StatusCode)
 	}
 
-	var result CepAbertoResult
+	var result Result
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
@@ -78,7 +82,7 @@ func (api *CepAbertoApi) Fetch(cep string) (*api.BrCepResult, error) {
 	return result.toBrCepResult(), nil
 }
 
-func (r CepAbertoResult) toBrCepResult() *api.BrCepResult {
+func (r Result) toBrCepResult() *api.BrCepResult {
 	var result = new(api.BrCepResult)
 
 	result.Cep = r.Cep

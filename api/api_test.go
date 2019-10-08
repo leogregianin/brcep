@@ -6,14 +6,14 @@ import (
 	gc "gopkg.in/check.v1"
 )
 
-var _ = gc.Suite(&ApiSuite{})
+var _ = gc.Suite(&APISuite{})
 
-type ApiSuite struct{}
+type APISuite struct{}
 
 // Hook up gocheck into the "go test" runner.
 func Test(t *testing.T) { gc.TestingT(t) }
 
-func (s *ApiSuite) TestBrCepResultSanitizeShouldCleanCEP(c *gc.C) {
+func (s *APISuite) TestBrCepResultSanitizeShouldCleanCEP(c *gc.C) {
 	var brCepResult = &BrCepResult{
 		Cep: "78-04-8000",
 	}

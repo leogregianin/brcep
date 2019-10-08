@@ -18,9 +18,9 @@ type ViaCepSuite struct{}
 func Test(t *testing.T) { gc.TestingT(t) }
 
 func (s *ViaCepSuite) TestNewViaCepApiSetDefaultUrl(c *gc.C) {
-	var viaCepApi = NewViaCepApi("", nil)
-	c.Check(viaCepApi.url, gc.Equals, "http://viacep.com.br/")
-	c.Check(viaCepApi.client, gc.NotNil)
+	var viaCepAPI = NewViaCepAPI("", nil)
+	c.Check(viaCepAPI.url, gc.Equals, "http://viacep.com.br/")
+	c.Check(viaCepAPI.client, gc.NotNil)
 }
 
 func (s *ViaCepSuite) TestFetchShouldFailWhenInvalidStatusCode(c *gc.C) {
@@ -31,8 +31,8 @@ func (s *ViaCepSuite) TestFetchShouldFailWhenInvalidStatusCode(c *gc.C) {
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var viaCepApi = NewViaCepApi("", httpClient)
-	_, err := viaCepApi.Fetch("78048000")
+	var viaCepAPI = NewViaCepAPI("", httpClient)
+	_, err := viaCepAPI.Fetch("78048000")
 
 	c.Check(err, gc.NotNil)
 }
@@ -45,8 +45,8 @@ func (s *ViaCepSuite) TestFetchShouldFailWhenInvalidJSON(c *gc.C) {
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var viaCepApi = NewViaCepApi("", httpClient)
-	_, err := viaCepApi.Fetch("78048000")
+	var viaCepAPI = NewViaCepAPI("", httpClient)
+	_, err := viaCepAPI.Fetch("78048000")
 
 	c.Check(err, gc.NotNil)
 }
@@ -69,8 +69,8 @@ func (s *ViaCepSuite) TestFetchShouldSucceedWhenCorrectRemoteResponse(c *gc.C) {
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var viaCepApi = NewViaCepApi("", httpClient)
-	result, err := viaCepApi.Fetch("78048000")
+	var viaCepAPI = NewViaCepAPI("", httpClient)
+	result, err := viaCepAPI.Fetch("78048000")
 
 	c.Check(err, gc.IsNil)
 	c.Check(result, gc.NotNil)
