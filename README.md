@@ -2,7 +2,7 @@
 
 # brcep 
 
-[![build status](https://img.shields.io/travis/leogregianin/brcep/master.svg?style=flat-square)](https://travis-ci.org/leogregianin/brcep) [![Go Report Card](https://goreportcard.com/badge/github.com/leogregianin/brcep)](https://goreportcard.com/report/github.com/leogregianin/brcep) [![github closed issues](https://img.shields.io/github/issues-closed-raw/leogregianin/brcep.svg?style=flat-square)](https://github.com/leogregianin/brcep/issues?q=is%3Aissue+is%3Aclosed) [![codecov](https://codecov.io/gh/leogregianin/brcep/branch/master/graph/badge.svg)](https://codecov.io/gh/leogregianin/brcep)
+[![build status](https://img.shields.io/travis/leogregianin/brcep/master.svg?style=flat-square)](https://travis-ci.org/leogregianin/brcep) ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/leogregianin/brcep?style=flat-square) [![Go Report Card](https://goreportcard.com/badge/github.com/leogregianin/brcep)](https://goreportcard.com/report/github.com/leogregianin/brcep) ![GitHub issues](https://img.shields.io/github/issues-raw/leogregianin/brcep?style=flat-square) [![github closed issues](https://img.shields.io/github/issues-closed-raw/leogregianin/brcep.svg?style=flat-square)](https://github.com/leogregianin/brcep/issues?q=is%3Aissue+is%3Aclosed) [![codecov](https://codecov.io/gh/leogregianin/brcep/branch/master/graph/badge.svg)](https://codecov.io/gh/leogregianin/brcep) ![GitHub](https://img.shields.io/github/license/leogregianin/brcep?style=flat-square)
 
 API for accessing information from Brazilian CEPs. The central idea is not to be dependent on a specific API, but to have the ease of accessing __brcep__ and it is in charge of consulting various sources and returning the CEP information quickly and easily.
 
