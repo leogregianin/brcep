@@ -35,7 +35,7 @@ func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	preferredApi, ok := h.CepApis[h.PreferredApi]
+	preferredAPI, ok := h.CepApis[h.PreferredAPI]
 	if !ok {
 		renderJSON(w, http.StatusInternalServerError, &responseError{"preferred api not available"})
 		return

@@ -69,9 +69,9 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfFetchReturnsError(c *gc.C) {
 
 func (s *HandlerSuite) TestHandleShouldReturnErrorIfURLIsInvalid(c *gc.C) {
 	var cepHandler = &CepHandler{
-		PreferredApi: "mock",
-		CepApis: map[string]api.Api{
-			"mock": &MockApi{
+		PreferredAPI: "mock",
+		CepApis: map[string]api.API{
+			"mock": &MockAPI{
 				shouldErr: nil,
 			},
 		},
@@ -85,11 +85,11 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfURLIsInvalid(c *gc.C) {
 	c.Check(w.Code, gc.Equals, 400)
 }
 
-func (s *HandlerSuite) TestHandleShouldReturnErrorIfWithoutCEPAndFormat(c *gc.C) {
+func (s *HandlerSuite) TestHandleShouldReturnErrorIfWithoutCepAndFormat(c *gc.C) {
 	var cepHandler = &CepHandler{
-		PreferredApi: "mock",
-		CepApis: map[string]api.Api{
-			"mock": &MockApi{
+		PreferredAPI: "mock",
+		CepApis: map[string]api.API{
+			"mock": &MockAPI{
 				shouldErr: nil,
 			},
 		},
