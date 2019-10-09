@@ -67,6 +67,42 @@ func (s *HandlerSuite) TestHandleShouldReturnErrorIfFetchReturnsError(c *gc.C) {
 	c.Check(w.Code, gc.Equals, 500)
 }
 
+func (s *HandlerSuite) TestHandleShouldReturnErrorIfURLIsInvalid(c *gc.C) {
+	var cepHandler = &CepHandler{
+		PreferredApi: "mock",
+		CepApis: map[string]api.Api{
+			"mock": &MockApi{
+				shouldErr: nil,
+			},
+		},
+	}
+	router := setupRouter(cepHandler)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	router.ServeHTTP(w, req)
+
+	c.Check(w.Code, gc.Equals, 400)
+}
+
+func (s *HandlerSuite) TestHandleShouldReturnErrorIfWithoutCEPAndFormat(c *gc.C) {
+	var cepHandler = &CepHandler{
+		PreferredApi: "mock",
+		CepApis: map[string]api.Api{
+			"mock": &MockApi{
+				shouldErr: nil,
+			},
+		},
+	}
+	router := setupRouter(cepHandler)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/234423", nil)
+	router.ServeHTTP(w, req)
+
+	c.Check(w.Code, gc.Equals, 400)
+}
+
 func (s *HandlerSuite) TestHandleShouldSucceed(c *gc.C) {
 	var cepHandler = &CepHandler{
 		PreferredAPI: "mock",
