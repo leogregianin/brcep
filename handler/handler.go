@@ -66,5 +66,4 @@ func (h *CepHandler) parseCepFromPath(path string) (string, bool) {
 	}
 
 	return pathParts[1], true
-
 }
