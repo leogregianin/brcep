@@ -28,9 +28,9 @@ func renderJSON(w http.ResponseWriter, code int, data interface{}) {
 func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	cep, err := h.parseCepFromPath(r.URL.Path)
+	cep, respErr := h.parseCepFromPath(r.URL.Path)
 	if err != nil {
-		renderJSON(w, http.StatusBadRequest, err)
+		renderJSON(w, http.StatusBadRequest, respErr)
 		return
 	}
 
