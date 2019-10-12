@@ -4,8 +4,6 @@ import (
 	"testing"
 
 	gc "gopkg.in/check.v1"
-
-	"github.com/gin-gonic/gin"
 )
 
 var _ = gc.Suite(&ConfigSuite{})
@@ -37,18 +35,4 @@ func (s *ConfigSuite) TestNewConfigShouldHaveDefaultValues(c *gc.C) {
 	c.Check(cfg.OperationMode, gc.Equals, "debug")
 	c.Check(cfg.PreferredAPI, gc.Equals, "viacep")
 	c.Check(cfg.CepAbertoToken, gc.Equals, "")
-}
-
-func (s *ConfigSuite) TestGetGinOperationModeShouldReturnBasedOnConfig(c *gc.C) {
-	cfg, err := NewConfig([]Loader{&MockLoader{}})
-	c.Check(err, gc.IsNil)
-
-	cfg.OperationMode = "test"
-	c.Check(cfg.GetGinOperationMode(), gc.Equals, gin.TestMode)
-
-	cfg.OperationMode = "debug"
-	c.Check(cfg.GetGinOperationMode(), gc.Equals, gin.DebugMode)
-
-	cfg.OperationMode = "release"
-	c.Check(cfg.GetGinOperationMode(), gc.Equals, gin.ReleaseMode)
 }

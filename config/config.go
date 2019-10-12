@@ -2,8 +2,6 @@ package config
 
 import (
 	"fmt"
-
-	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -50,16 +48,4 @@ func NewConfig(loaders []Loader) (*Config, error) {
 	}
 
 	return cfg, nil
-}
-
-// GetGinOperationMode returns gin mode (test or debug) .. by default returns gin release mode ..
-func (c *Config) GetGinOperationMode() string {
-	switch c.OperationMode {
-	case "test":
-		return gin.TestMode
-	case "debug":
-		return gin.DebugMode
-	default:
-		return gin.ReleaseMode
-	}
 }
