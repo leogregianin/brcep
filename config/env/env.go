@@ -22,4 +22,5 @@ func (l *Loader) Load(cfg *config.Config) {
 	cfg.ViaCepURL = os.Getenv("BRCEP_VIACEP_URL")
 	cfg.CepAbertoURL = os.Getenv("BRCEP_CEPABERTO_URL")
 	cfg.CepAbertoToken = os.Getenv("BRCEP_CEPABERTO_TOKEN")
+	cfg.CorreiosURL = os.Getenv("BRCEP_CORREIOS_URL")
 }

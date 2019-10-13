@@ -76,7 +76,7 @@ func (s *CepAbertoSuite) TestFetchShouldSucceedWhenCorrectRemoteResponse(c *gc.C
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var cepAbertoAPI = NewCepAbertoAPI("", "token-example", httpClient)
+	var cepAbertoAPI = NewCepAbertoAPI("http://localhost:8080/", "token-example", httpClient)
 	result, err := cepAbertoAPI.Fetch("78048000")
 
 	c.Check(err, gc.IsNil)

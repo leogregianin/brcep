@@ -19,7 +19,8 @@ type BrCepResult struct {
 	Ibge        string `json:"ibge"`
 }
 
-// API ..
+// API holds the interface that represents an API capable of fetching
+// a CEP an return a standardized struct
 type API interface {
 	// Fetch should fetch the result from the
 	// API and return as BrCepResult

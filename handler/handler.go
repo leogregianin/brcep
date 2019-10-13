@@ -8,47 +8,52 @@ import (
 	"github.com/leogregianin/brcep/api"
 )
 
-// CepHandler ..
-type CepHandler struct {
-	PreferredAPI string
-	CepApis      map[string]api.API
-}
+type (
+	// CepHandler provides a handler for a http.Server
+	// used to interface the API implementations and
+	// the server request
+	CepHandler struct {
+		PreferredAPI string
+		CepApis      map[string]api.API
+	}
+	responseError struct {
+		Error string `json:"error"`
+	}
+)
 
-type responseError struct {
-	Error string `json:"error"`
-}
-
-func renderJSON(w http.ResponseWriter, code int, data interface{}) {
-	j, _ := json.Marshal(data)
-	w.WriteHeader(code)
-	w.Write(j)
-}
-
-// Handle handles the request ..
+// Handle handles a request to /:cep/ which will extract the CEP
+// from the URL.Path and fetch on multiple API implementations
+// and return a common JSON result
 func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	cep, respErr := h.parseCepFromPath(r.URL.Path)
 	if respErr != nil {
-		renderJSON(w, http.StatusBadRequest, respErr)
+		h.renderJSON(w, http.StatusBadRequest, respErr)
 		return
 	}
 
 	preferredAPI, ok := h.CepApis[h.PreferredAPI]
 	if !ok {
-		renderJSON(w, http.StatusInternalServerError, &responseError{"preferred api not available"})
+		h.renderJSON(w, http.StatusInternalServerError, &responseError{"preferred api not available"})
 		return
 	}
 
 	result, err := preferredAPI.Fetch(cep)
 	if err != nil {
-		renderJSON(w, http.StatusInternalServerError, &responseError{Error: err.Error()})
+		h.renderJSON(w, http.StatusInternalServerError, &responseError{Error: err.Error()})
 		return
 	}
 
 	result.Sanitize()
 
-	renderJSON(w, http.StatusOK, result)
+	h.renderJSON(w, http.StatusOK, result)
+}
+
+func (h *CepHandler) renderJSON(w http.ResponseWriter, code int, data interface{}) {
+	j, _ := json.Marshal(data)
+	w.WriteHeader(code)
+	w.Write(j)
 }
 
 func (h *CepHandler) parseCepFromPath(path string) (string, *responseError) {

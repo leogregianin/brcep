@@ -18,6 +18,7 @@ type Config struct {
 	ViaCepURL      string
 	CepAbertoURL   string
 	CepAbertoToken string
+	CorreiosURL    string
 }
 
 // Loader defines the behaviour to load the values from

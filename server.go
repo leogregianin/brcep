@@ -7,6 +7,7 @@ import (
 
 	"github.com/leogregianin/brcep/api"
 	"github.com/leogregianin/brcep/api/cepaberto"
+	"github.com/leogregianin/brcep/api/correios"
 	"github.com/leogregianin/brcep/api/viacep"
 	"github.com/leogregianin/brcep/config"
 	"github.com/leogregianin/brcep/config/env"
@@ -33,7 +34,8 @@ func main() {
 
 	var (
 		cepApis = map[string]api.API{
-			viacep.ID: viacep.NewViaCepAPI(cfg.ViaCepURL, http.DefaultClient),
+			viacep.ID:   viacep.NewViaCepAPI(cfg.ViaCepURL, http.DefaultClient),
+			correios.ID: correios.NewCorreiosAPI(cfg.CorreiosURL, http.DefaultClient),
 		}
 	)
 

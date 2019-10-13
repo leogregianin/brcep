@@ -28,6 +28,7 @@ func (s *FlagLoaderSuite) TestNewFlagLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 		"-via-cep-url=http://localhost:8000/",
 		"-cep-aberto-url=http://localhost:8010/",
 		"-cep-aberto-token=token-sample",
+		"-correios-url=http://localhost:8001/",
 	}
 
 	var (
@@ -42,4 +43,5 @@ func (s *FlagLoaderSuite) TestNewFlagLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 	c.Check(cfg.ViaCepURL, gc.Equals, "http://localhost:8000/")
 	c.Check(cfg.CepAbertoURL, gc.Equals, "http://localhost:8010/")
 	c.Check(cfg.CepAbertoToken, gc.Equals, "token-sample")
+	c.Check(cfg.CorreiosURL, gc.Equals, "http://localhost:8001/")
 }
