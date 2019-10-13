@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	cache "github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/leogregianin/brcep/api"
@@ -55,6 +56,7 @@ func main() {
 	var cepHandler = &handler.CepHandler{
 		PreferredAPI: cfg.PreferredAPI,
 		CepApis:      cepApis,
+		Cache:        cache.New(5*time.Minute, 10*time.Minute),
 	}
 
 	router := http.NewServeMux()

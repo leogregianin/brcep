@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/leogregianin/brcep/api"
+	"github.com/leogregianin/brcep/cache"
 )
 
 type (
@@ -17,6 +19,7 @@ type (
 	CepHandler struct {
 		PreferredAPI string
 		CepApis      map[string]api.API
+		Cache        cache.Cache
 	}
 	responseError struct {
 		Error string `json:"error"`
@@ -45,6 +48,13 @@ func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if h.Cache != nil {
+		if cached, found := h.Cache.Get(cep); found {
+			h.renderJSON(w, http.StatusNotModified, cached.(*api.BrCepResult), nil)
+			return
+		}
+	}
+
 	preferredAPI, ok := h.CepApis[h.PreferredAPI]
 	if !ok {
 		h.renderJSON(w, http.StatusInternalServerError, nil, &responseError{"preferred api not available"})
@@ -58,6 +68,10 @@ func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result.Sanitize()
+
+	if h.Cache != nil {
+		h.Cache.Set(cep, result, 1*time.Hour)
+	}
 
 	h.renderJSON(w, http.StatusOK, result, nil)
 }
