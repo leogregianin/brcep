@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/leogregianin/brcep/api"
 	"github.com/leogregianin/brcep/api/cepaberto"
@@ -15,21 +17,25 @@ import (
 	"github.com/leogregianin/brcep/handler"
 )
 
-func main() {
-	fmt.Println(`   ___.                                  `)
-	fmt.Println(`   \_ |_________   ____  ____ ______     `)
-	fmt.Println(`    | __ \_  __ \_/ ___\/ __ \\____ \    `)
-	fmt.Println(`    | \_\ \  | \/\  \__\  ___/|  |_> >   `)
-	fmt.Println(`    |___  /__|    \___  >___  >   __/    `)
-	fmt.Println(`        \/            \/    \/|__|       `)
+func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.DebugLevel)
+}
 
+func main() {
 	cfg, err := config.NewConfig([]config.Loader{
 		flag.NewFlagLoader(),
 		env.NewEnvLoader(),
 	})
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+	}
+
+	logLevel, err := log.ParseLevel(cfg.CorreiosURL)
+	if err == nil {
+		log.SetLevel(logLevel)
 	}
 
 	var (
@@ -52,7 +58,6 @@ func main() {
 	}
 
 	router := http.NewServeMux()
-
 	router.HandleFunc("/", cepHandler.Handle)
 
 	server := &http.Server{
@@ -63,7 +68,9 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	log.Infof("starting server at %s", cfg.Address)
+
 	if err := server.ListenAndServe(); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

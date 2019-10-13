@@ -5,15 +5,15 @@ import (
 )
 
 const (
-	defaultAddress       = ":8000"
-	defaultOperationMode = "debug"
-	defaultPreferredAPI  = "viacep"
+	defaultAddress      = ":8000"
+	defaultLogLevel     = "debug"
+	defaultPreferredAPI = "viacep"
 )
 
 // Config hold configuration ..
 type Config struct {
 	Address        string
-	OperationMode  string
+	LogLevel       string
 	PreferredAPI   string
 	ViaCepURL      string
 	CepAbertoURL   string
@@ -41,8 +41,8 @@ func NewConfig(loaders []Loader) (*Config, error) {
 	if len(cfg.Address) <= 0 {
 		cfg.Address = defaultAddress
 	}
-	if len(cfg.OperationMode) <= 0 {
-		cfg.OperationMode = defaultOperationMode
+	if len(cfg.LogLevel) <= 0 {
+		cfg.LogLevel = defaultLogLevel
 	}
 	if len(cfg.PreferredAPI) <= 0 {
 		cfg.PreferredAPI = defaultPreferredAPI

@@ -18,7 +18,7 @@ func Test(t *testing.T) { gc.TestingT(t) }
 
 func (s *EnvLoaderSuite) TestNewEnvLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 	os.Setenv("BRCEP_ADDRESS", ":8080")
-	os.Setenv("BRCEP_MODE", "test")
+	os.Setenv("BRCEP_LOG_LEVEL", "test")
 	os.Setenv("BRCEP_PREFERRED_API", "cep-aberto")
 	os.Setenv("BRCEP_VIACEP_URL", "http://localhost:8000/")
 	os.Setenv("BRCEP_CEPABERTO_URL", "http://localhost:8010/")
@@ -32,7 +32,7 @@ func (s *EnvLoaderSuite) TestNewEnvLoaderShouldLoadValuesIntoConfig(c *gc.C) {
 
 	loader.Load(cfg)
 	c.Check(cfg.Address, gc.Equals, ":8080")
-	c.Check(cfg.OperationMode, gc.Equals, "test")
+	c.Check(cfg.LogLevel, gc.Equals, "test")
 	c.Check(cfg.PreferredAPI, gc.Equals, "cep-aberto")
 	c.Check(cfg.ViaCepURL, gc.Equals, "http://localhost:8000/")
 	c.Check(cfg.CepAbertoURL, gc.Equals, "http://localhost:8010/")

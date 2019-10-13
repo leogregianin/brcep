@@ -32,7 +32,7 @@ func (s *ConfigSuite) TestNewConfigShouldHaveDefaultValues(c *gc.C) {
 	c.Check(err, gc.IsNil)
 
 	c.Check(cfg.Address, gc.Equals, ":8000")
-	c.Check(cfg.OperationMode, gc.Equals, "debug")
+	c.Check(cfg.LogLevel, gc.Equals, "debug")
 	c.Check(cfg.PreferredAPI, gc.Equals, "viacep")
 	c.Check(cfg.CepAbertoToken, gc.Equals, "")
 }
