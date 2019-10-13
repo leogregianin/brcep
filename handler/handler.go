@@ -21,6 +21,11 @@ type (
 		CepApis      map[string]api.API
 		Cache        cache.Cache
 	}
+	channelResponse struct {
+		ApiID  string
+		Result *api.BrCepResult
+		Error  error
+	}
 	responseError struct {
 		Error string `json:"error"`
 	}
@@ -55,16 +60,38 @@ func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	preferredAPI, ok := h.CepApis[h.PreferredAPI]
-	if !ok {
-		h.renderJSON(w, http.StatusInternalServerError, nil, &responseError{"preferred api not available"})
+	var (
+		ch         = make(chan *channelResponse)
+		apiResults = make(map[string]*api.BrCepResult)
+	)
+
+	for id, currentAPI := range h.CepApis {
+		go h.fetch(cep, id, currentAPI, ch)
+	}
+
+	for range h.CepApis {
+		var current = <-ch
+		if current.Error != nil {
+			log.WithFields(log.Fields{
+				"api_id": current.ApiID,
+				"error":  current.Error.Error(),
+			}).Error("API.Fetch error")
+		} else {
+			apiResults[current.ApiID] = current.Result
+		}
+	}
+
+	if len(apiResults) <= 0 {
+		h.renderJSON(w, http.StatusInternalServerError, nil, &responseError{"no API responded successfully"})
 		return
 	}
 
-	result, err := preferredAPI.Fetch(cep)
-	if err != nil {
-		h.renderJSON(w, http.StatusInternalServerError, nil, &responseError{err.Error()})
-		return
+	result, ok := apiResults[h.PreferredAPI]
+	if !ok {
+		for _, currentResult := range apiResults {
+			result = currentResult
+			break
+		}
 	}
 
 	result.Sanitize()
@@ -74,6 +101,20 @@ func (h *CepHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.renderJSON(w, http.StatusOK, result, nil)
+}
+
+func (h *CepHandler) fetch(cep string, id string, api api.API, ch chan<- *channelResponse) {
+	log.WithFields(log.Fields{
+		"api_id": id,
+		"cep":    cep,
+	}).Debug("dispatching API request")
+
+	result, err := api.Fetch(cep)
+	ch <- &channelResponse{
+		ApiID:  id,
+		Result: result,
+		Error:  err,
+	}
 }
 
 func (h *CepHandler) renderJSON(w http.ResponseWriter, code int, data interface{}, respErr *responseError) {

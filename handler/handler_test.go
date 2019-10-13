@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	cache "github.com/patrickmn/go-cache"
+	"github.com/patrickmn/go-cache"
 	gc "gopkg.in/check.v1"
 
 	"github.com/leogregianin/brcep/api"
@@ -169,5 +169,79 @@ func (s *HandlerSuite) TestHandleCachedShouldHitCacheAndSucceed(c *gc.C) {
 	router.ServeHTTP(w, req)
 
 	c.Check(w.Code, gc.Equals, 304)
+	c.Check(w.Body.String(), gc.Equals, "{\"cep\":\"01001000\",\"endereco\":\"Praça da Sé\",\"bairro\":\"Sé\",\"complemento\":\"lado ímpar\",\"cidade\":\"São Paulo\",\"uf\":\"SP\",\"latitude\":\"\",\"longitude\":\"\",\"ddd\":\"\",\"unidade\":\"\",\"ibge\":\"3550308\"}")
+}
+
+func (s *HandlerSuite) TestHandleMultipleApisReturnPreferred(c *gc.C) {
+	var cepHandler = &CepHandler{
+		PreferredAPI: "mock_2",
+		CepApis: map[string]api.API{
+			"mock_1": &MockAPI{
+				shouldErr: nil,
+				shouldReturn: &api.BrCepResult{
+					Cep:         "01001-000",
+					Endereco:    "Praça da Sé",
+					Complemento: "lado ímpar",
+					Cidade:      "São Paulo",
+					Uf:          "SP",
+					Bairro:      "Sé",
+					Ibge:        "3550308",
+				},
+			},
+			"mock_2": &MockAPI{
+				shouldErr: nil,
+				shouldReturn: &api.BrCepResult{
+					Cep:         "01001-000",
+					Endereco:    "Praça da Sé API 2",
+					Complemento: "lado ímpar",
+					Cidade:      "São Paulo",
+					Uf:          "SP",
+					Bairro:      "Sé",
+					Ibge:        "3550308",
+				},
+			},
+		},
+		Cache: cache.New(5*time.Minute, 10*time.Minute),
+	}
+	router := setupRouter(cepHandler)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/789000/json", nil)
+	router.ServeHTTP(w, req)
+
+	c.Check(w.Code, gc.Equals, 200)
+	c.Check(w.Body.String(), gc.Equals, "{\"cep\":\"01001000\",\"endereco\":\"Praça da Sé API 2\",\"bairro\":\"Sé\",\"complemento\":\"lado ímpar\",\"cidade\":\"São Paulo\",\"uf\":\"SP\",\"latitude\":\"\",\"longitude\":\"\",\"ddd\":\"\",\"unidade\":\"\",\"ibge\":\"3550308\"}")
+}
+
+func (s *HandlerSuite) TestHandleMultipleApisReturnFirstIfPreferredErrored(c *gc.C) {
+	var cepHandler = &CepHandler{
+		PreferredAPI: "mock_2",
+		CepApis: map[string]api.API{
+			"mock_1": &MockAPI{
+				shouldErr: nil,
+				shouldReturn: &api.BrCepResult{
+					Cep:         "01001-000",
+					Endereco:    "Praça da Sé",
+					Complemento: "lado ímpar",
+					Cidade:      "São Paulo",
+					Uf:          "SP",
+					Bairro:      "Sé",
+					Ibge:        "3550308",
+				},
+			},
+			"mock_2": &MockAPI{
+				shouldErr:    errors.New("unknown error"),
+				shouldReturn: nil,
+			},
+		},
+		Cache: cache.New(5*time.Minute, 10*time.Minute),
+	}
+	router := setupRouter(cepHandler)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/789000/json", nil)
+	router.ServeHTTP(w, req)
+
+	c.Check(w.Code, gc.Equals, 200)
 	c.Check(w.Body.String(), gc.Equals, "{\"cep\":\"01001000\",\"endereco\":\"Praça da Sé\",\"bairro\":\"Sé\",\"complemento\":\"lado ímpar\",\"cidade\":\"São Paulo\",\"uf\":\"SP\",\"latitude\":\"\",\"longitude\":\"\",\"ddd\":\"\",\"unidade\":\"\",\"ibge\":\"3550308\"}")
 }

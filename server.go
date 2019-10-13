@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	cache "github.com/patrickmn/go-cache"
+	"github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/leogregianin/brcep/api"
