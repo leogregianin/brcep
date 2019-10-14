@@ -69,7 +69,7 @@ func (s *ViaCepSuite) TestFetchShouldSucceedWhenCorrectRemoteResponse(c *gc.C) {
 	httpClient, teardown := testingHTTPClient(h)
 	defer teardown()
 
-	var viaCepAPI = NewViaCepAPI("", httpClient)
+	var viaCepAPI = NewViaCepAPI("http://localhost:8080/", httpClient)
 	result, err := viaCepAPI.Fetch("78048000")
 
 	c.Check(err, gc.IsNil)

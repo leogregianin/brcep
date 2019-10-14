@@ -1,12 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/patrickmn/go-cache"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/leogregianin/brcep/api"
 	"github.com/leogregianin/brcep/api/cepaberto"
+	"github.com/leogregianin/brcep/api/correios"
 	"github.com/leogregianin/brcep/api/viacep"
 	"github.com/leogregianin/brcep/config"
 	"github.com/leogregianin/brcep/config/env"
@@ -14,26 +18,31 @@ import (
 	"github.com/leogregianin/brcep/handler"
 )
 
-func main() {
-	fmt.Println(`   ___.                                  `)
-	fmt.Println(`   \_ |_________   ____  ____ ______     `)
-	fmt.Println(`    | __ \_  __ \_/ ___\/ __ \\____ \    `)
-	fmt.Println(`    | \_\ \  | \/\  \__\  ___/|  |_> >   `)
-	fmt.Println(`    |___  /__|    \___  >___  >   __/    `)
-	fmt.Println(`        \/            \/    \/|__|       `)
+func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.DebugLevel)
+}
 
+func main() {
 	cfg, err := config.NewConfig([]config.Loader{
 		flag.NewFlagLoader(),
 		env.NewEnvLoader(),
 	})
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
+	}
+
+	logLevel, err := log.ParseLevel(cfg.CorreiosURL)
+	if err == nil {
+		log.SetLevel(logLevel)
 	}
 
 	var (
 		cepApis = map[string]api.API{
-			viacep.ID: viacep.NewViaCepAPI(cfg.ViaCepURL, http.DefaultClient),
+			viacep.ID:   viacep.NewViaCepAPI(cfg.ViaCepURL, http.DefaultClient),
+			correios.ID: correios.NewCorreiosAPI(cfg.CorreiosURL, http.DefaultClient),
 		}
 	)
 
@@ -47,10 +56,10 @@ func main() {
 	var cepHandler = &handler.CepHandler{
 		PreferredAPI: cfg.PreferredAPI,
 		CepApis:      cepApis,
+		Cache:        cache.New(5*time.Minute, 10*time.Minute),
 	}
 
 	router := http.NewServeMux()
-
 	router.HandleFunc("/", cepHandler.Handle)
 
 	server := &http.Server{
@@ -61,7 +70,9 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	log.Infof("starting server at %s", cfg.Address)
+
 	if err := server.ListenAndServe(); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

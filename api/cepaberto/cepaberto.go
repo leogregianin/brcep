@@ -11,21 +11,20 @@ import (
 )
 
 const (
-	// ID ..
+	// ID holds the identifier of this implementation
 	ID = "cepaberto"
 
 	defaultCepAbertoAPIURL = "http://www.cepaberto.com/"
 )
 
-// API holds the request details for cepaberto.com API ..
+// API holds the API implementation for cepaberto.com
 type API struct {
 	url    string
 	token  string
 	client *http.Client
 }
 
-// Result holds the result from cepaberto.com API ..
-type Result struct {
+type responsePayload struct {
 	Cep        string `json:"cep"`
 	Logradouro string `json:"logradouro"`
 	Bairro     string `json:"bairro"`
@@ -41,7 +40,7 @@ type Result struct {
 	Longitude string `json:"longitude"`
 }
 
-// NewCepAbertoAPI creates and returns new Api struct ..
+// NewCepAbertoAPI creates and returns new API struct
 func NewCepAbertoAPI(url, token string, client *http.Client) *API {
 	if len(url) <= 0 {
 		url = defaultCepAbertoAPIURL
@@ -53,7 +52,8 @@ func NewCepAbertoAPI(url, token string, client *http.Client) *API {
 	return &API{url, token, client}
 }
 
-// Fetch will return data corresponding to the requested value ..
+// Fetch implements API.Fetch by fetching the cepaberto.com and
+// returning a BrCepResult
 func (api *API) Fetch(cep string) (*api.BrCepResult, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(api.url+"api/v3/cep?cep=%s", url.QueryEscape(cep)), nil)
 	if err != nil {
@@ -73,7 +73,7 @@ func (api *API) Fetch(cep string) (*api.BrCepResult, error) {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v %d", "invalid status code", resp.StatusCode)
 	}
 
-	var result Result
+	var result responsePayload
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
@@ -82,7 +82,7 @@ func (api *API) Fetch(cep string) (*api.BrCepResult, error) {
 	return result.toBrCepResult(), nil
 }
 
-func (r Result) toBrCepResult() *api.BrCepResult {
+func (r responsePayload) toBrCepResult() *api.BrCepResult {
 	var result = new(api.BrCepResult)
 
 	result.Cep = r.Cep
