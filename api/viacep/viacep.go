@@ -51,7 +51,7 @@ func NewViaCepAPI(url string, client *http.Client) *API {
 func (api *API) Fetch(cep string) (*api.BrCepResult, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf(api.url+"ws/%s/json/", cep), nil)
 	if err != nil {
-		return nil, fmt.Errorf("CepAbertoApi.Fetch %v", err)
+		return nil, fmt.Errorf("ViaCepApi.Fetch %v", err)
 	}
 
 	resp, err := api.client.Do(req)
