@@ -105,7 +105,6 @@ To make it easier to see what to expect from this project, the current version i
 ```bash
 $ docker run \
     -e "BRCEP_ADDRESS=:8000" \
-    -e "BRCEP_OPERATION_MODE=debug" \
     -e "BRCEP_PREFERRED_API=viacep" \
     -p 127.0.0.1:8000:8000/tcp leogregianin/brcep
 ```
