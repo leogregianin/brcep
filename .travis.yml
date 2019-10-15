@@ -1,13 +1,21 @@
-  language: go
-  go:
-    - 1.9
-  before_install:
-    - go get -u github.com/gin-gonic/gin
-    - go get -u github.com/subosito/gotenv
-  script: 
-    - go test -bench .
-    - go test -race -coverprofile=coverage.txt -covermode=atomic
-  after_success:
+language: go
+go:
+  - 1.13.x
+
+script:
+  - make test
+
+after_success:
   - bash <(curl -s https://codecov.io/bash)
-  notifications:
-    email: true
+
+before_deploy:
+  - make build.docker
+
+deploy:
+  - provider: script
+    script: ./script/docker_push.sh
+    on:
+      branch: master
+
+notifications:
+  email: true

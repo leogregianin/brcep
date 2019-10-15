@@ -1,51 +1,77 @@
-
-<img src="img/gopher.png" width="500" height="500" />
-
+![brcepgopher](docs/img/gopher.png)
 
 # brcep 
 
-[![build status](https://img.shields.io/travis/leogregianin/brcep/master.svg?style=flat-square)](https://travis-ci.org/leogregianin/brcep) [![Go Report Card](https://goreportcard.com/badge/github.com/leogregianin/brcep)](https://goreportcard.com/report/github.com/leogregianin/brcep) [![github closed issues](https://img.shields.io/github/issues-closed-raw/leogregianin/brcep.svg?style=flat-square)](https://github.com/leogregianin/brcep/issues?q=is%3Aissue+is%3Aclosed) [![codecov](https://codecov.io/gh/leogregianin/brcep/branch/master/graph/badge.svg)](https://codecov.io/gh/leogregianin/brcep)
+[![build status](https://img.shields.io/travis/leogregianin/brcep/master.svg?style=flat-square)](https://travis-ci.org/leogregianin/brcep) [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/leogregianin/brcep?style=flat-square)](https://cloud.docker.com/repository/docker/leogregianin/brcep/builds) [![GoDoc](https://godoc.org/github.com/leogregianin/brcep?status.svg)](https://godoc.org/github.com/leogregianin/brcep) [![Go Report Card](https://goreportcard.com/badge/github.com/leogregianin/brcep)](https://goreportcard.com/report/github.com/leogregianin/brcep) [![GitHub issues](https://img.shields.io/github/issues-raw/leogregianin/brcep?style=flat-square)](https://github.com/leogregianin/brcep/issues?q=is%3Aopen+is%3Aissue) [![github closed issues](https://img.shields.io/github/issues-closed-raw/leogregianin/brcep.svg?style=flat-square)](https://github.com/leogregianin/brcep/issues?q=is%3Aissue+is%3Aclosed) [![codecov](https://codecov.io/gh/leogregianin/brcep/branch/master/graph/badge.svg)](https://codecov.io/gh/leogregianin/brcep) ![GitHub](https://img.shields.io/github/license/leogregianin/brcep?style=flat-square)
 
-API para acesso a informações dos CEPs do Brasil. A ideia central é não ficar dependente de uma API específica, e sim, ter a facilidade de acessar a __brcep__ e ela se encarrega em consultar diversas fontes e lhe devolver as informações do CEP de forma rápida e fácil.
+API for accessing information from Brazilian CEPs. The central idea is not to be dependent on a specific API, but to have the ease of accessing __brcep__ and it is in charge of consulting various sources and returning the CEP information quickly and easily.
 
-O projeto __brcep__ faz consultas às APIs [ViaCEP](http://viacep.com.br) e [CEPAberto](http://cepaberto.com).
+Currently we support API queries to [ViaCEP](http://viacep.com.br), [CEPAberto](http://cepaberto.com) and [Correios](https://apps.correios.com.br/). Your help is welcome to implement the `CepApi` interface and introduce new APIs support.
 
+![brcep](docs/img/brcep.png)
 
-![brcep](img/brcep.png)
+### Sidecar Pattern
 
+The idea of this project is that you use the Docker image as a [sidecar](https://dzone.com/articles/sidecar-design-pattern-in-your-microservices-ecosy-1) for your current application. This project is not a library for consuming APIs, but a server that should run alongside (hence sidecar) your current application, and when you need to request a zip code, you will request the sidecar endpoint and not directly to an API. This gives you the advantage of middleware that will make the correct use of multiple APIs. 
 
-Tópicos
+Consider the docker-compose below to better understand:
+
+```yaml
+version: '2.1'
+
+services:
+  myapp:
+    container_name: myapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+  brcep:
+    image: brcep:latest
+    ports:
+      - "8000:8000"
+    links:
+      - myapp
+    container_name: brcep
+    environment:
+      - PORT=8000
+```
+
+The idea is that your application runs on port 3000 and brcep runs on port 8000, considering the multiple [examples](./docs/examples.md) we have defined, replacing the URL with http://brcep/78048000/json. So your application now transparently consumes various APIs through brcep.
+
+Topics
 =================
 
-  * [Acesso a API](#acesso-a-api)
-  	* [Retorno](#retorno)
-  * [Exemplos](#exemplos)
-	* [Curl](#curl)
-	* [Javascript](#javascript)
-	* [Python](#python)
-	* [Golang](#golang)
-	* [Ruby](#ruby)
-	* [PHP](#php)
-	* [Java](#java)
-	* [C#](#c-sharp)
-	* [Delphi](#delphi)
-  * [Rodar localmente](#rodar-localmente)
-	* [Instalação do Golang](#instalação-do-golang)
-	* [Instalação dos pacotes](#instalação-dos-pacotes)
-	* [Configuração do ambiente](#configuração-do-ambiente)
-	* [Executar os testes](#executar-os-testes)
-    * [Executar o server](#executar-o-server)
-	* [Acessar a API](#acessar-a-api)
-  * [Licença de uso](#licença-de-uso)
+  * [API example](#api-example)
+  	* [Access](#access)
+  	* [Response](#response)
+  * [Execution](#Execution)
+  	* [Environment Setting](#environment-setting)
+  	* [Run with Docker](#run-with-docker)
+  	* [Running locally](#running-locally)
+  	* [Running tests](#running-tests)
+  * [Examples](./docs/examples.md)
+	* [Curl](./docs/examples.md#curl)
+	* [Javascript](./docs/examples.md#javascript)
+	* [Python](./docs/examples.md#python)
+	* [Golang](./docs/examples.md#golang)
+	* [Ruby](./docs/examples.md#ruby)
+	* [PHP](./docs/examples.md#php)
+	* [Java](./docs/examples.md#java)
+	* [C#](./docs/examples.md#c-sharp)
+	* [Delphi](./docs/examples.md#delphi)
+  * [Use license](#use-license)
 
 
-## Acesso a API
+## API example
 
-Para visualizar os dados acesse [https://brcep.herokuapp.com/78048000/json](https://brcep.herokuapp.com/78048000/json).
+### Access
 
-A API retorna em formato JSON como no exemplo abaixo.
+To make it easier to see what to expect from this project, the current version is available for viewing data at
+[https://brcep-qnlohrjtbl.now.sh/78048000/json](https://brcep-qnlohrjtbl.now.sh/78048000/json).
 
-### Retorno
+### Response
 
 ```json
 {
@@ -55,228 +81,73 @@ A API retorna em formato JSON como no exemplo abaixo.
   "complemento": "",
   "cidade": "Cuiabá",
   "uf": "MT",
-  "ibge": "5103403",
   "latitude": "-15.5786867",
-  "longitude": "-56.0952081"
+  "longitude": "-56.0952081",
+  "ddd": "",
+  "unidade": "",
+  "ibge": "5103403"
 }
 ```
 
-* O campo "CEP" retorna somente números.
-* Os campos "complemento", "latitude" e "longitude" podem retornar em branco dependendo da API consultada.
-* Os demais campos sempre retornarão valores.
+* The "CEP" field returns numbers only.
+* The "complement", "latitude" and "longitude" fields may be left blank depending on the API queried.
+* The remaining fields will always return values.
 
-## Exemplos
+## Execution
 
-### curl
-```curl
-curl https://brcep.herokuapp.com/78048000/json
+### Environment Setting
+
+* The CEPAberto API requires the authorization token and the ViaCEP API does not need the token.
+* Rename the .env.example file to .env and include your CEPAberto.com API access token
+
+## Running with Docker Hub
+
+```bash
+$ docker run \
+    -e "BRCEP_ADDRESS=:8000" \
+    -e "BRCEP_PREFERRED_API=viacep" \
+    -p 127.0.0.1:8000:8000/tcp leogregianin/brcep
 ```
 
-### Javascript
-```javascript
-var request = require('request');
-var options = {
-    url: 'https://brcep.herokuapp.com/78048000/json',
-    }
-};
-function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
-        var info = JSON.parse(body);
-        console.log(info);
-    }
-}
-request(options, callback);
-```
+### Run with Docker from Local
 
-### Python
-```python
-import urllib.request
-import json
-
-url = "https://brcep.herokuapp.com/78048000/json"
-result = urllib.request.urlopen(url)
-data = result.read()
-encoding = result.info().get_content_charset('utf-8')
-print(json.loads(data.decode(encoding)))
-```
-
-### Golang
-```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-    "log"
-    "net/http"
-    "net/url"
-)
-
-type brCep struct {
-	Cep         string `json:"cep"`
-	Endereco    string `json:"endereco"`
-	Bairro      string `json:"bairro"`
-	Complemento string `json:"complemento"`
-	Cidade      string `json:"cidade"`
-	Uf          string `json:"uf"`
-	Ibge        string `json:"ibge"`
-	Latitude    string `json:"latitude"`
-	Longitude   string `json:"longitude"`
-}
-
-func main() {
-    cep := "78048000"
-    cepSeguro := url.QueryEscape(cep)
-
-    url := fmt.Sprintf("https://brcep.herokuapp.com/%s/json", cepSeguro)
-
-    req, err := http.NewRequest("GET", url, nil)
-
-    client := &http.Client{}
-
-    resp, err := client.Do(req)
-    if err != nil {
-        log.Fatal("Do: ", err)
-        return
-    }
-
-    defer resp.Body.Close()
-    var resultado brCep
-
-    if err := json.NewDecoder(resp.Body).Decode(&resultado); err != nil {
-        log.Println(err)
-    }
-
-    fmt.Printf("%+v\n", resultado)
-}
-```
-
-### Ruby
-```ruby
-require "net/http"
-require "uri"
-require 'json'
-
-url = "https://brcep.herokuapp.com/78048000/json"
-uri = URI.parse(url)
-
-http = Net::HTTP.new(uri.host, uri.port)
-http.use_ssl = true if url =~ /^https/
-
-request = Net::HTTP::Post.new(uri.request_uri, 'Content-Type' => 'application/json')
-response = http.request(request)
-if response.code == "200"
-    result = JSON.parse(response.body)
-    puts(result)
-end
-```
-
-### PHP
-```php
-<?php
-    header ( "Content-Type: application/json;charset=utf-8" );
-    $url = 'https://brcep.herokuapp.com/78048000/json';
-    $json = file_get_contents($url);
-    echo $json;
-?>
-```
-
-### Java
-```java
-
-```
-
-### C-Sharp
-```c#
-
-```
-
-### Delphi
-```pascal
-uses idHTTP;
-
-procedure TForm1.ButtonCEPClick(Sender: TObject);
-var
-    HTTP: TIdHTTP;
-    IDSSLHandler : TIdSSLIOHandlerSocketOpenSSL;    
-    Response: TStringStream;
-    URL: String;
-begin
-    URL := 'https://brcep.herokuapp.com/78048000/json';
-    MemoReturn.Lines.Clear;
-    try
-        HTTP := TIdHTTP.Create;
-        IDSSLHandler := TIdSSLIOHandlerSocketOpenSSL.Create;	
-        HTTP.IOHandler := IDSSLHandler;	
-        Response := TStringStream.Create('');
-        HTTP.Get(URL, Response);
-        if HTTP.ResponseCode = 200 then
-           MemoReturn.Text := Utf8ToAnsi( Response.DataString );
-    finally
-        Response.Free;
-        HTTP.Destroy;
-    end;
-end;
-```
-
-## Rodar localmente
-
-### Instalação do Golang
-
-Instalar o Golang [https://golang.org/dl](https://golang.org/dl).
-
-### Instalação dos pacotes
+Using Docker (`golang:alpine` image) with the command below the image will be compiled and executed on port `8000`. 
 
 ```sh
-go get -u github.com/gin-gonic/gin
-go get -u github.com/subosito/gotenv
+$ make run.docker
 ```
 
-### Configuração do ambiente
+This will build the image with the name `leogregianin/brcep` and run it with the `.env.example` file if no `.env` file is present at the directory. To use other environment variables, please create a `.env` file next to the `.env.example` file.
 
-* A API do CEPAberto necessita do token de autorização e a API do ViaCEP não necessita de token.
-* Renomear o arquivo .env.example para .env e incluir o seu token de acesso da API CEPAberto.com
+To view data go to [http://localhost:8000/78048000/json](http://localhost:8000/78048000/json).
 
-### Executar os testes
+### Running locally
+
+Since you have Golang 1.13 installed locally, the command below will download the dependencies and compile a binary for local execution.
 
 ```sh
-$ go test -bench .
+$ make run.local
 ```
 
-![brcep](img/unittests.png)
+You can choose other architectures to build the binary if you need to deploy the binary to other systems:
 
-### Executar o server
+```bash
+$ make build.local
+$ make build.linux.armv8
+$ make build.linux.armv7
+$ make build.linux
+$ make build.osx
+$ make build.windows
+```
+
+The above commands generate a binary in the `bin` folder.
+
+### Running tests
 
 ```sh
-$ go run .\server.go .\cepaberto.go .\viacep.go .\util.go
+$ make test
 ```
 
-![brcep](img/server.png)
+## Use license
 
-### Acessar a API
-
-Para visualizar os dados acesse [http://localhost:3000/78048000/json](http://localhost:3000/78048000/json).
-
-## Licença de uso
-
-[MIT License](LICENSE)
-
-Copyright (c) 2017 Leonardo Gregianin
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+See more details in [MIT License](LICENSE)

@@ -1,122 +1,78 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
-	"regexp"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/subosito/gotenv"
+	"github.com/patrickmn/go-cache"
+	log "github.com/sirupsen/logrus"
+
+	"github.com/leogregianin/brcep/api"
+	"github.com/leogregianin/brcep/api/cepaberto"
+	"github.com/leogregianin/brcep/api/correios"
+	"github.com/leogregianin/brcep/api/viacep"
+	"github.com/leogregianin/brcep/config"
+	"github.com/leogregianin/brcep/config/env"
+	"github.com/leogregianin/brcep/config/flag"
+	"github.com/leogregianin/brcep/handler"
 )
 
-const helpMessage = `Bem-vindo ao brcep!
-
-Utilize desta forma: https://brcep.herokuapp.com/cep/json
-Por exemplo: https://brcep.herokuapp.com/78048000/json
-
-Resultado: 
-
-{
-	"cep": "78048000",
-	"endereco": "Avenida Miguel Sutil, de 5799/5800 a 7887/7888",
-	"bairro": "Consil",
-	"complemento": "",
-	"cidade": "Cuiabá",
-	"uf": "MT",
-	"ibge": "5103403",
-	"latitude": "-15.5786867",
-	"longitude": "-56.0952081"
-  }
-`
-
-// return json brcep template
-func brcepAPI(resp *brcepResult) string {
-
-	reg, err := regexp.Compile("[^0-9]+")
-	if err != nil {
-		fmt.Printf("RegExp: %s", err)
-	}
-
-	jsonConvert := &brcepResult{
-		Cep:         reg.ReplaceAllString(resp.Cep, ""),
-		Endereco:    resp.Endereco,
-		Bairro:      resp.Bairro,
-		Complemento: resp.Complemento,
-		Cidade:      resp.Cidade,
-		Uf:          resp.Uf,
-		Ibge:        resp.Ibge,
-		Latitude:    resp.Latitude,
-		Longitude:   resp.Longitude,
-	}
-
-	conv, err := json.MarshalIndent(jsonConvert, "", "  ")
-	if err != nil {
-		fmt.Printf("apiWriteJSON: %s", err)
-	}
-	return string(conv)
-}
-
-func apiCepJSON(c *gin.Context) {
-
-	cep := c.Param("cep")
-	c.Header("Content-Type", "application/json; charset=utf-8")
-
-	resp := getCepaberto(cep) // get CEPAberto
-	if (resp != nil) && (resp.Cep != "") {
-		c.String(200, mapCepabertoJSON(resp))
-	} else {
-		resp := getViacep(cep) // get ViaCEP
-		if (resp != nil) && (resp.Cep != "") {
-			c.String(200, mapViacepJSON(resp))
-		} else {
-			c.JSON(500, gin.H{"status": "500"})
-		}
-	}
-}
-
-// 404 error showing start page
-func startPage(c *gin.Context) {
-	c.String(404, helpMessage)
+func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.DebugLevel)
 }
 
 func main() {
+	cfg, err := config.NewConfig([]config.Loader{
+		flag.NewFlagLoader(),
+		env.NewEnvLoader(),
+	})
 
-	fmt.Println(`   ___.                                  `)
-	fmt.Println(`   \_ |_________   ____  ____ ______     `)
-	fmt.Println(`    | __ \_  __ \_/ ___\/ __ \\____ \    `)
-	fmt.Println(`    | \_\ \  | \/\  \__\  ___/|  |_> >   `)
-	fmt.Println(`    |___  /__|    \___  >___  >   __/    `)
-	fmt.Println(`        \/            \/    \/|__|       `)
-	fmt.Printf("   %s\n\n", "http://github.com/leogregianin/brcep")
-
-	gotenv.Load(".env")
-
-	if os.Getenv("GIN_MODE") == "test" {
-		gin.SetMode(gin.TestMode)
-	} else if os.Getenv("GIN_MODE") == "debug" {
-		gin.SetMode(gin.DebugMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	router := gin.Default()
-	router.Use(gin.ErrorLogger())
+	logLevel, err := log.ParseLevel(cfg.CorreiosURL)
+	if err == nil {
+		log.SetLevel(logLevel)
+	}
 
-	router.NoRoute(startPage)
-	router.GET("/:cep/json", apiCepJSON)
+	var (
+		cepApis = map[string]api.API{
+			viacep.ID:   viacep.NewViaCepAPI(cfg.ViaCepURL, http.DefaultClient),
+			correios.ID: correios.NewCorreiosAPI(cfg.CorreiosURL, http.DefaultClient),
+		}
+	)
 
-	port := os.Getenv("PORT")
-	fmt.Println("starting server on", port)
+	if len(cfg.CepAbertoToken) > 0 {
+		cepApis[cepaberto.ID] = cepaberto.NewCepAbertoAPI(
+			cfg.CepAbertoURL,
+			cfg.CepAbertoToken,
+			http.DefaultClient)
+	}
+
+	var cepHandler = &handler.CepHandler{
+		PreferredAPI: cfg.PreferredAPI,
+		CepApis:      cepApis,
+		Cache:        cache.New(5*time.Minute, 10*time.Minute),
+	}
+
+	router := http.NewServeMux()
+	router.HandleFunc("/", cepHandler.Handle)
 
 	server := &http.Server{
-		Addr:           ":" + port,
+		Addr:           cfg.Address,
 		Handler:        router,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	server.ListenAndServe()
+
+	log.Infof("starting server at %s", cfg.Address)
+
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }
